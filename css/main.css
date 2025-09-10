@@ -1,0 +1,89 @@
+html {
+	font-family: "Signika", sans-serif;
+	font-weight: 600;
+	background-size: cover;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background: #ff512f;
+	background: linear-gradient(#ff512f, #dd2476);
+	background: -webkit-linear-gradient(#ff512f, #dd2476);
+	background: -moz-linear-gradient(#ff512f, #dd2476);
+	background: -ms-linear-gradient(#ff512f, #dd2476);
+	background: -o-linear-gradient(#ff512f, #dd2476);
+	background-repeat:no-repeat;
+	color: white;
+}
+
+html, body {
+	overflow: hidden;
+}
+
+br {
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+}
+
+.centered {
+	padding: 20% 0;
+	text-align: center;
+}
+
+.logo {
+	height: 160px;
+	width: 160px;
+	border-radius: 25%;
+	border: 5px solid white;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+}
+
+.title {
+	font-size: 45px;
+	font-weight: 600;
+	cursor: default;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+}
+
+.subtitle {
+	font-size: 27.5px;
+	font-weight: 500;
+	cursor: default;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+}
+
+.button {
+	text-decoration: none;
+	background-color: white;
+	color: #ff512f;
+	font-size: 20px;
+	font-weight: 400;
+	border-radius: 20px;
+	text-align: center;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 15px;
+	padding-right: 15px;
+	/* cursor: pointer; */
+	cursor: default;
+	width: fit-content;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+}
+
+.center {
+	margin: auto;
+}
+
+/*
+.button:hover {
+	background-color: rgb(200, 200, 200) !important;
+}
+*/
