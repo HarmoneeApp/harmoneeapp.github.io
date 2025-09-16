@@ -18,46 +18,18 @@ function trim(string) {
 }
 
 /* Development Mode - Check Beta Status */
-function checkBetaStatus() {
-	var betaStatus = false;
+export function checkBetaStatus() {
+	var betaStatus = true;
 
 	if (betaStatus) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
-/* Beta Portal - Access Key */
-async function betaPortal() {
-	if (checkBetaStatus() == true) {
-		const { value: password } = await Swal.fire({
-			title: "Beta Portal",
-			icon: "warning",
-			input: "password",
-			inputPlaceholder: "Access Key",
-			inputAttributes: {
-				autocapitalize: 'off',
-				autocorrect: 'off'
-			},
-			confirmButtonText: "Continue"
+		Swal.fire({
+			title: "",
+			text: "Harmonee is currently in beta stages, and only existing users have access.\n\nCheck back soon!",
+			icon: "error",
+			confirmButtonText: "Okay"
+		}).then((value) => {
+			window.location.replace("welcome.html");
 		});
-		
-		var encryptedValue = CryptoJS.AES.encrypt(password, "Access Key");
-		var decryptedValue = CryptoJS.AES.decrypt(encryptedValue, "Access Key");
-		if (decryptedValue.toString() == "48594265746154657374657230343232") {
-			setTimeout(function() {
-				window.location.replace("signup.html");
-			}, 500);
-		} else {
-			Swal.fire({
-				title: "Incorrect Password",
-				icon: "error",
-				confirmButtonText: "Dismiss"
-			});
-		}
-	} else {
-		window.location.replace("signup.html");
 	}
 }
 
@@ -259,6 +231,9 @@ function createUser() {
 			});
 		});
 	}
+}
+if (document.getElementById('createUser')) {
+	document.getElementById('createUser').addEventListener('click', createUser);
 }
 
 /* Firebase Auth - Sign In User */
