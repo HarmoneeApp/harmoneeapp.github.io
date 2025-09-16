@@ -16,7 +16,12 @@ html {
 }
 
 html, body {
-	overflow: hidden;
+	overflow: auto;
+}
+
+ion-icon {
+	color: #ff512f;
+	font-size: 20px;
 }
 
 button {
@@ -456,4 +461,109 @@ button {
 	font-weight: 700;
 	line-height: 20px;
 	margin-top: calc(50% - 15px);
+}
+
+.post {
+	background-color: white;
+	border-radius: 20px;
+	margin-top: 30px;
+	margin-left: 10px;
+	margin-right: 10px;
+	height: auto;
+}
+
+.post-header {
+	border-top-left-radius: 20px;
+	border-top-right-radius: 20px;
+	height: 54px;
+	border-bottom: 1px solid #ff512f;
+}
+
+.post-avatar {
+	display: inline-block;
+	height: 35px;
+	width: 35px;
+	margin-top: 10px;
+	margin-left: 10px;
+	margin-bottom: 6px;
+	border-radius: 25%;
+}
+
+.post-info {
+	display: inline-block;
+	margin-top: 10px;
+	margin-left: 5px;
+	vertical-align: top;
+}
+
+.post-displayname {
+	font-size: 15px;
+	font-weight: 800;
+	color: #ff512f;
+	float: left;
+	clear: left;
+}
+
+.post-username {
+	font-size: 13px;
+	font-weight: 700;
+	color: #ff512f;
+	float: left;
+	clear: left;
+	margin-top: -2.5px;
+}
+
+.post-content {
+	font-size: 15px;
+	font-weight: 700;
+	margin-top: 5px;
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-bottom: 5px;
+	color: #ff512f;
+	height: auto;
+}
+
+.post-footer {
+	height: auto;
+	border-top: 1px solid #ff512f;
+	border-bottom-left-radius: 20px;
+	border-bottom-right-radius: 20px;
+	text-align: right;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.post-actions {
+	display: inline;
+	vertical-align: middle;
+}
+
+.post-like {
+	margin-left: 10px;
+	vertical-align: middle;
+	cursor: pointer;
+	float: left;
+}
+
+.post-comment {
+	margin-left: 10px;
+	vertical-align: middle;
+	cursor: pointer;
+	float: left;
+}
+
+.post-delete {
+	margin-left: 10px;
+	vertical-align: middle;
+	cursor: pointer;
+	float: left;
+}
+
+.post-date {
+	font-size: 15px;
+	font-weight: 700;
+	margin-left: 10px;
+	margin-right: 10px;
+	color: #ff512f;
 }

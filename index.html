@@ -6,18 +6,217 @@
 		<title>Harmonee</title>
 		<link rel="icon" href="img/logo.png">
 		<link rel="preconnect" href="https://fonts.gstatic.com">
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Signika:wght@400;500;600&display=swap">
-		<link rel="stylesheet" href="css/main.css">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap">
+		<link rel="stylesheet" href="css/style.css">
 	</head>
 	<body>
-		<div class="centered">
-			<img class="logo" src="img/logo.png">
-			<br><br>
-			<span class="title">Harmonee</span>
-			<br>
-			<span class="subtitle">A Social Platform for Everyone</span>
-			<br><br><br>
-			<div class="button center">Coming Soon to iOS</div>
+		<!-- Firebase SDKs -->
+		<script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-analytics.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-auth.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-database.js"></script>
+		<!-- Other SDKs -->
+		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+		<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+		<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+		<!-- Firebase Configuration -->
+		<script>
+			// Your web app's Firebase configuration
+			var firebaseConfig = {
+				apiKey: "AIzaSyBEZIIAwiXw-UwNZKmsk9ac-5EprpBRV28",
+				authDomain: "harmonee-eb104.firebaseapp.com",
+				databaseURL: "https://harmonee-eb104-default-rtdb.firebaseio.com",
+				projectId: "harmonee-eb104",
+				messagingSenderId: "186610294157",
+				appId: "1:186610294157:web:4fde0e31525a9dd9c671c4",
+				measurementId: "G-5EFYQC8WR7"
+			};
+			// Initialize Firebase
+			firebase.initializeApp(firebaseConfig);
+			firebase.analytics();
+		</script>
+		<!-- Navigation -->
+		<div class="tab">
+			<button class="tab-link" onclick="showTab(event, 'feed')" id="default">Feed</button>
+			<button class="tab-link" onclick="showTab(event, 'search')">Search</button>
+			<button class="tab-link" onclick="showTab(event, 'messages')">Messages</button>
+			<button class="profile-button" id="showProfileMenu"><img id="avatar-icon" class="avatar-icon"></button>
 		</div>
+		<div class="profile-menu" id="profileMenu">
+			<button class="menu-item" id="showProfile">Profile</button>
+			<button class="menu-item" id="signOutUser">Sign Out</button>
+		</div>
+		<!-- Feed -->
+		<div id="feed" class="tab-content">
+			<!-- New Post -->
+			<div class="newpost-view">
+				<textarea id="newpost-content" class="post-textarea" spellcheck="false" maxlength="420" placeholder="What's happening?" onkeyup="autogrow(this)"></textarea>
+				<button class="newpost-button" id="createPost">Post</button>
+				<div id="count">
+					<span id="current_count">0</span>
+					<span id="maximum_count">/ 420</span>
+				</div>
+			</div>
+			<!-- Posts -->
+			<div id="recent-posts">
+				<div class="posts-container">
+					<div class="post post-test">
+						<div class="post-header">
+							<img class="post-avatar" src="img/avatar.png">
+							<div class="post-info">
+								<span class="post-displayname">Display Name</span>
+								<span class="post-username">Username</span>
+							</div>
+						</div>
+						<p class="post-content">Test</p>
+						<div class="post-footer">
+							<div class="post-actions">
+								<div class="post-like"><ion-icon name="heart-outline"></ion-icon></div>
+								<div class="post-comment"><ion-icon name="chatbox-outline"></ion-icon></div>
+								<div class="post-delete"><ion-icon name="trash-outline"></ion-icon></div>
+							</div>
+							<span class="post-date">Date</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Search -->
+		<div id="search" class="tab-content">
+			<center>
+				<p class="tab-title">Coming Soon</p>
+			</center>
+		</div>
+		<!-- Messages -->
+		<div id="messages" class="tab-content">
+			<center>
+				<p class="tab-title">Coming Soon</p>
+			</center>
+		</div>
+		<!-- Profile -->
+		<div id="profile" class="tab-content">
+			<div class="profile-container">
+				<div class="profile-header">
+					<img class="profile-image">
+					<div class="profile-info">
+						<br>
+						<span class="profile-name">Name</span>
+						<br>
+						<span class="profile-username">Username</span>
+						<div class="edit-button" id="editProfile">Edit Profile</div>
+					</div>
+				</div>
+				<div id="edit-profile" class="modal">
+					<div class="modal-content">
+						<div class="modal-header">
+							<p class="header-text">Edit Profile</p>
+						</div>
+						<div class="modal-body">
+							<center>
+								<div class="update-avatar">
+									<input type="file" accept="image/jpeg, image/png" id="edit-avatar">
+									<label for="edit-avatar" id="avatar-button">Upload</label>
+								</div>
+							</center>
+							<label for="edit-displayname" class="modal-label">Display Name</label>
+							<input type="text" class="modal-input" spellcheck="false" id="edit-displayname">
+							<label for="edit-username" class="modal-label">Username</label>
+							<input type="text" class="modal-input" spellcheck="false" id="edit-username">
+							<label for="edit-website" class="modal-label">Website</label>
+							<input type="text" class="modal-input" spellcheck="false" id="edit-website">
+						</div>
+						<div class="modal-footer">
+							<div class="footer-button" id="closeModal">Cancel</div>
+							<div class="footer-button" id="updateProfileInfo">Save Changes</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Posts -->
+			<div id="user-posts">
+				<div class="posts-container"></div>
+			</div>
+		</div>
+		<!-- Other Scripts -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://unpkg.com/sweetalert2/dist/sweetalert2.all.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+		<script type="module" src="js/app.js"></script>
+		<script src="js/main.js"></script>
+		<!-- Custom Scripts -->
+		<script type="module">
+			import { startDatabaseQueries } from './js/app.js';
+			import { getProfilePictureURL } from './js/app.js';
+
+			var didSignIn = false;
+
+			firebase.auth().onAuthStateChanged(function(user) {
+				if (user) {
+					// User is signed in.
+					didSignIn = true;
+
+					loadProfilePicture(user.uid);
+					loadProfileInfo(user.uid);
+
+					startDatabaseQueries();
+				} else {
+					if (didSignIn) {
+						Swal.fire({
+							title: "You were successfully signed out.",
+							icon: "success",
+							confirmButtonText: "Okay"
+						}).then((value) => {
+							setTimeout(function() {
+								window.location.replace("welcome.html");
+							}, 1000);
+						});
+					} else {
+						window.location.replace("welcome.html");
+					}
+				}
+			});
+
+			function loadProfilePicture(userID) {
+				var avatarView = document.getElementById("avatar-icon");
+				var profileImage = document.getElementsByClassName("profile-image")[0];
+				var updateAvatarView = document.getElementsByClassName("update-avatar")[0];
+				
+				var url = getProfilePictureURL(userID);
+
+				avatarView.setAttribute('src', url);
+				profileImage.setAttribute('src', url);
+				updateAvatarView.style.backgroundImage = "url(" + url + ")";
+			}
+
+			function loadProfileInfo(userID) {
+				var profileNameLabel = document.getElementsByClassName("profile-name")[0];
+				var profileUsernameLabel = document.getElementsByClassName("profile-username")[0];
+
+				var editProfileNameLabel = document.getElementById("edit-displayname");
+				var editProfileUsernameLabel = document.getElementById("edit-username");
+
+				return firebase.database().ref("/users/" + userID).once("value").then((snapshot) => {
+					var displayName = (snapshot.val() && snapshot.val().displayName) || "Display Name";
+					var username = (snapshot.val() && snapshot.val().username) || "Username";
+					var verified = (snapshot.val() && snapshot.val().verified) || false;
+
+					profileNameLabel.textContent = displayName;
+					profileUsernameLabel.textContent = "@" + username;
+				
+					editProfileNameLabel.value = displayName;
+					editProfileUsernameLabel.value = username;
+				});
+			}
+
+			// Post Character Count
+			$("#postcontent").keyup(function() {
+				var characterCount = $(this).val().length,
+				current_count = $("#current_count"),
+				maximum_count = $("maximum_count"),
+				count = $("#count");
+
+				current_count.text(characterCount);
+			});
+		</script>
 	</body>
 </html>

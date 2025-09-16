@@ -1,6 +1,15 @@
+/* Supabase Stuff */
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+const supabaseUrl = 'https://ivneclagzgocuvufxubf.supabase.co';
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml2bmVjbGFnemdvY3V2dWZ4dWJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc2MDY0MTksImV4cCI6MjA3MzE4MjQxOX0.gqMhkDpVq0bSLx5y7jUrBXWbA1Zb662s2spolbeByao";
+const supabase = createClient(supabaseUrl, supabaseKey);
+
 /* Go Back */
 function goBack() {
 	window.location.replace("welcome.html");
+}
+if (document.getElementById('goBack')) {
+	document.getElementById('goBack').addEventListener('click', goBack);
 }
 
 /* Trim */
@@ -144,6 +153,20 @@ function setUserData(userID, displayName, username) {
 	firebase.database().ref("users/" + userID).set(userData);
 }
 
+function getUserData(userID, callback) {
+	firebase.database().ref("users/" + userID).once("value").then(function(snapshot) {
+		if (snapshot.exists()) {
+			callback(snapshot.val());
+		} else {
+			callback(null); // No data found for this user
+		}
+	})
+	.catch(function(error) {
+		console.error("Error fetching user data:", error);
+		callback(null); // Handle error gracefully
+	});
+}
+
 /* Firebase Auth - Create User */
 function createUser() {
 	// Input Fields
@@ -246,6 +269,9 @@ function signIn() {
 		signInUser();
 	}
 }
+if (document.getElementById('signIn')) {
+	document.getElementById('signIn').addEventListener('click', signIn);
+}
 
 function signInAndPersist() {
 	firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(() => {
@@ -312,24 +338,45 @@ function signOutUser() {
 		});
 	});
 }
+if (document.getElementById('signOutUser')) {
+	document.getElementById('signOutUser').addEventListener('click', signOutUser);
+}
 
 /* Update User Data */
-function updateUserData(userID, imageURL, username) {
-	var userData = {
-		"avatarURL": imageURL,
-		"username": username
-	};
+function updateUserData(userID, username) {
+	var userData = {"username": username};
 
 	firebase.database().ref("users/" + userID).set(userData);
 }
 
 /* Upload + Change Profile Picture */
-var uploadAvatar = function(event) {
+async function uploadAvatar(event) {
 	var newImage = event.target.files[0];
 
 	var user = firebase.auth().currentUser;
-	var storageRef = firebase.storage().ref(user.uid).child("avatar.png");
-	storageRef.put(newImage);
+
+	const file = event.target.files[0];
+
+	if (!file) {
+	  console.error('No file selected');
+	  return;
+	}
+	
+	const { data, error } = await supabase.storage.from("avatars").getPublicUrl(user.uid + ".png");
+	if (error) {
+		const { data1, error1 } = await supabase.storage.from('avatars').upload(user.uid + '.png', file, {
+			cacheControl: '3600',
+			upsert: true,
+			contentType: file.type
+		});
+	} else {
+		const { data1, error1 } = await supabase.storage.from('avatars').update(user.uid + '.png', file, {
+			cacheControl: '3600',
+			upsert: true,
+			contentType: file.type
+		});
+		console.log("Image exists, need to replace");
+	}
 
 	var username;
 
@@ -337,28 +384,16 @@ var uploadAvatar = function(event) {
 		username = snapshot.child(user.uid).child("username").val();
 	});
 
-	storageRef.getDownloadURL().then((url) => {
-		updateUserData(user.uid, url, username);
-		user.updateProfile({
-			photoURL: url
-		}).then(function() {
-			Swal.fire({
-				title: "Your profile picture was successfully updated.",
-				icon: "success",
-				confirmButtonText: "Okay"
-			}).then((value) => {
-				setTimeout(function() {
-					updateProfilePicture();
-				}, 200);
-			});
-		}).catch(function(error) {
-			Swal.fire({
-				title: "Something went wrong. Please try again.",
-				icon: "error",
-				confirmButtonText: "Okay"
-			});
-		});
-	}).catch((error) => {
+	updateUserData(user.uid, username);
+	Swal.fire({
+		title: "Your profile picture was successfully updated.",
+		icon: "success",
+		confirmButtonText: "Okay"
+	}).then((value) => {
+		setTimeout(function() {
+			updateProfilePicture();
+		}, 200);
+	}).catch(function(error) {
 		Swal.fire({
 			title: "Something went wrong. Please try again.",
 			icon: "error",
@@ -366,15 +401,32 @@ var uploadAvatar = function(event) {
 		});
 	});
 }
+if (document.getElementById('edit-avatar')) {
+	document.getElementById('edit-avatar').addEventListener('change', uploadAvatar);
+}
 
 /* Update Profile Picture */
 function updateProfilePicture() {
-	var user = firebase.auth().currentUser;
 	var avatarView = document.getElementById("avatar-icon");
 	var profileImage = document.getElementsByClassName("profile-image")[0];
 
-	avatarView.src = user.photoURL;
-	profileImage.src = user.photoURL;
+	avatarView.src = supabase.storage.from("avatars").getPublicUrl(user.uid + ".png");
+	profileImage.src = supabase.storage.from("avatars").getPublicUrl(user.uid + ".png");
+}
+
+/* Check if Profile Picture Exists */
+export function getProfilePictureURL(userID) {
+    var http = new XMLHttpRequest();
+	var imageURL = "https://ivneclagzgocuvufxubf.supabase.co/storage/v1/object/public/avatars/" + userID + ".png";
+
+    http.open('HEAD', imageURL, false);
+    http.send();
+
+	if (http.status == 404) {
+		return "../img/avatar.png";
+	} else {
+		return "https://ivneclagzgocuvufxubf.supabase.co/storage/v1/object/public/avatars/" + userID + ".png";
+	}
 }
 
 /* Shortcuts to DOM Elements */
@@ -403,20 +455,24 @@ function createNewPost(userID, postContent, postDate) {
 }
 
 /* Create Post Elements */
-function createPostElement(postID, userID, postContent, postDate) {
-	var currentID = firebase.auth().currentUser.uid;
-
-	var html =
-	'<div class="post post-' + postID + ' mdl-cell mdl-cell--12-col mdl-cell--6-col-tablet mdl-cell--4-col-desktop mdl-grid mdl-grid--no-spacing">' +
-		'<div class="mdl-card mdl-shadow--2dp">' +
-			'<div class="header">' +
-				'<div>' +
-					'<div class="avatar"></div>' +
-					'<div class="displayName mdl-color-text--black"></div>' +
-					'<div class="username mdl-color-text--black"></div>' +
-				'</div>' +
+function createPostElement(postID, userID) {
+	var html = 
+	'<div class="post post-' + postID + '">' +
+		'<div class="post-header">' +
+			'<img class="post-avatar" src="' + getProfilePictureURL(userID) + '">' +
+			'<div class="post-info">' +
+				'<span class="post-displayname"></span>' +
+				'<span class="post-username"></span>' +
 			'</div>' +
-			'<div class="text"></div>' +
+		'</div>' +
+		'<p class="post-content"></p>' +
+		'<div class="post-footer">' +
+		'<div class="post-actions">' +
+			'<div class="post-like"><ion-icon name="heart-outline"></ion-icon></div>' +
+			'<div class="post-comment"><ion-icon name="chatbox-outline"></ion-icon></div>' +
+			'<div class="post-delete"><ion-icon name="trash-outline"></ion-icon></div>' +
+		'</div>' +
+			'<span class="post-date"></span>' +
 		'</div>' +
 	'</div>';
 
@@ -424,18 +480,12 @@ function createPostElement(postID, userID, postContent, postDate) {
 	var div = document.createElement("div");
 	div.innerHTML = html;
 	var postElement = div.firstChild;
-	if (componentHandler) {
-		componentHandler.upgradeElements(postElement.getElementsByClassName("mdl-textfield")[0]);
-	}
-
-	// Set Values
-	postElement.getElementsByClassName("text")[0].innerHTML = postContent;
 
 	return postElement;
 }
 
 /* Start Listening for New Posts */
-function startDatabaseQueries() {
+export function startDatabaseQueries() {
 	var currentUserID = firebase.auth().currentUser.uid;
 	var recentPostsRef = firebase.database().ref('posts').limitToLast(100);
 	var userPostsRef = firebase.database().ref('user-posts/' + currentUserID);
@@ -443,15 +493,32 @@ function startDatabaseQueries() {
 	var fetchPosts = function(postsRef, sectionElement) {
 		postsRef.on("child_added", function(data) {
 			var containerElement = sectionElement.getElementsByClassName('posts-container')[0];
-			containerElement.insertBefore(
-				createPostElement(data.key, data.val().userID, data.val().postContent, data.val().postDate),
-				containerElement.firstChild
-			);
+			var postElement = createPostElement(data.key, data.val().userID);
+			containerElement.insertBefore(postElement, containerElement.firstChild);
+
+			firebase.database().ref("/users/" + data.val().userID).once("value").then((snapshot) => {
+				var displayName = (snapshot.val() && snapshot.val().displayName) || "Display Name";
+				var username = (snapshot.val() && snapshot.val().username) || "Username";
+
+				postElement.getElementsByClassName("post-displayname")[0].textContent = displayName;
+				postElement.getElementsByClassName("post-username")[0].textContent = "@" + username;
+			});
+
+			postElement.getElementsByClassName("post-content")[0].textContent = data.val().postContent;
+			postElement.getElementsByClassName("post-date")[0].textContent = data.val().postDate;
+
+			if (currentUserID != data.val().userID) {
+				postElement.getElementsByClassName("post-delete")[0].hidden = true;
+			}
+
+			postElement.getElementsByClassName("post-delete")[0].addEventListener('click', () => {
+				deletePost(currentUserID, data.key)
+			});
 		});
 		postsRef.on('child_changed', function(data) {
 			var containerElement = sectionElement.getElementsByClassName('posts-container')[0];
 			var postElement = containerElement.getElementsByClassName('post-' + data.key)[0];
-			postElement.getElementsByClassName('text')[0].innerText = data.val().postContent;
+			postElement.getElementsByClassName('post-content')[0].innerText = data.val().postContent;
 		});
 		postsRef.on('child_removed', function(data) {
 			var containerElement = sectionElement.getElementsByClassName('posts-container')[0];
@@ -461,21 +528,17 @@ function startDatabaseQueries() {
 	};
 
 	// Fetch all posts
-	fetchPosts(recentPostsRef, recentPostsSection);
-	fetchPosts(userPostsRef, userPostsSection);
+	fetchPosts(recentPostsRef, recentPosts);
+	fetchPosts(userPostsRef, userPosts);
 
 	// Keep track of listeners
 	listeningFirebaseRefs.push(recentPostsRef);
 	listeningFirebaseRefs.push(userPostsRef);
 }
 
-function newPostForCurrentUser(postContent) {
-	
-}
-
 /* Post Button Pressed */
 function createPost() {
-	var postContent = document.getElementById("postcontent").value;
+	var postContent = document.getElementById("newpost-content").value;
 	
 	if (postContent == "" || !postContent.replace(/\s/g, '').length) {
 		Swal.fire({
@@ -488,13 +551,13 @@ function createPost() {
 		const months = [
 			"Jan",
 			"Feb",
-			"Mar",
-			"Apr",
+			"March",
+			"April",
 			"May",
-			"Jun",
-			"Jul",
+			"June",
+			"July",
 			"Aug",
-			"Sep",
+			"Sept",
 			"Oct",
 			"Nov",
 			"Dec"
@@ -514,10 +577,36 @@ function createPost() {
 
 		var dateString = mm + " " + dd + ", " + yyyy;
 
+		// Clear Text Field
+		document.getElementById("newpost-content").value = "";
+		document.getElementById("current_count").textContent = "0";
+
 		// Create Post
 		var currentUserID = firebase.auth().currentUser.uid;
+		
 		return createNewPost(currentUserID, postContent, dateString);
 	}
+}
+if (document.getElementById('createPost')) {
+	document.getElementById('createPost').addEventListener('click', createPost);
+}
+
+/* Delete Post */
+function deletePost(userID, postID) {
+	Swal.fire({
+		title: "Are You Sure?",
+		text: "Are you sure you want to delete this post?\nThis action cannot be undone!",
+		icon: "warning",
+		showCancelButton: true,
+		cancelButtonColor: "#e0e0e0",
+		confirmButtonColor: "#ff512f",
+		confirmButtonText: "Yes, delete it!"
+	}).then((result) => {
+		if (result.isConfirmed) {
+			firebase.database().ref().child("posts").child(postID).remove();
+			firebase.database().ref().child("user-posts").child(userID).child(postID).remove();
+		}
+	});
 }
 
 /* Toggle Dropdown Visibility */
@@ -533,6 +622,9 @@ function showProfileMenu() {
 	searchView.classList.toggle("moved-down");
 	messagesView.classList.toggle("moved-down");
 	profileView.classList.toggle("moved-down");
+}
+if (document.getElementById('showProfileMenu')) {
+	document.getElementById('showProfileMenu').addEventListener('click', showProfileMenu);
 }
 
 /* Dismiss Menu and View Profile */
@@ -551,6 +643,9 @@ function showProfile() {
 
 	showView(event, 'profile')
 }
+if (document.getElementById('showProfile')) {
+	document.getElementById('showProfile').addEventListener('click', showProfile);
+}
 
 /* Edit Profile */
 function editProfile() {
@@ -558,12 +653,18 @@ function editProfile() {
 
 	modal.style.display = "block";
 }
+if (document.getElementById('editProfile')) {
+	document.getElementById('editProfile').addEventListener('click', editProfile);
+}
 
 /* Close Modal */
 function closeModal() {
 	var modal = document.getElementById("edit-profile");
 
 	modal.style.display = "none";
+}
+if (document.getElementById('closeModal')) {
+	document.getElementById('closeModal').addEventListener('click', closeModal);
 }
 
 /* Update Profile */
@@ -583,4 +684,7 @@ function updateProfileInfo() {
 		//
 	}
 	*/
+}
+if (document.getElementById('updateProfileInfo')) {
+	document.getElementById('updateProfileInfo').addEventListener('click', updateProfileInfo);
 }
