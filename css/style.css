@@ -537,25 +537,40 @@ button {
 .post-actions {
 	display: inline;
 	vertical-align: middle;
+	align-items: center;
+	height: 20px;
 }
 
 .post-like {
+	display: flex;
+	align-items: center;
 	margin-left: 10px;
-	vertical-align: middle;
 	cursor: pointer;
 	float: left;
 }
 
+.like-count {
+	color: #ff512f;
+	margin-left: 2.5px;
+	cursor: default;
+}
+
 .post-comment {
+	display: flex;
+	align-items: center;
 	margin-left: 10px;
-	vertical-align: middle;
 	cursor: pointer;
 	float: left;
+}
+
+.comment-count {
+	color: #ff512f;
+	margin-left: 2.5px;
+	cursor: default;
 }
 
 .post-delete {
 	margin-left: 10px;
-	vertical-align: middle;
 	cursor: pointer;
 	float: left;
 }

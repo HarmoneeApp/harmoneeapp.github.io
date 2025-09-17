@@ -415,7 +415,8 @@ function createNewPost(userID, postContent, postDate) {
 	var postData = {
 		userID: userID,
 		postContent: postContent,
-		postDate: postDate
+		postDate: postDate,
+		likeCount: 0
 	};
 
 	// Create new key
@@ -424,7 +425,6 @@ function createNewPost(userID, postContent, postDate) {
 	// Write post data
 	var updates = {};
 	updates["/posts/" + newPostKey] = postData;
-	updates["/user-posts/" + userID + "/" + newPostKey] = postData;
 
 	return firebase.database().ref().update(updates);
 }
@@ -443,8 +443,8 @@ function createPostElement(postID, userID) {
 		'<p class="post-content"></p>' +
 		'<div class="post-footer">' +
 		'<div class="post-actions">' +
-			'<div class="post-like"><ion-icon name="heart-outline"></ion-icon></div>' +
-			'<div class="post-comment"><ion-icon name="chatbox-outline"></ion-icon></div>' +
+			'<div class="post-like"><ion-icon name="heart-outline"></ion-icon><span class="like-count"></span></div>' +
+			'<div class="post-comment"><ion-icon name="chatbox-outline"></ion-icon><span class="comment-count"></span></div>' +
 			'<div class="post-delete"><ion-icon name="trash-outline"></ion-icon></div>' +
 		'</div>' +
 			'<span class="post-date"></span>' +
@@ -459,11 +459,71 @@ function createPostElement(postID, userID) {
 	return postElement;
 }
 
+/* Like Functionality */
+function toggleLike(userID, postKey) {
+	firebase.database().ref('posts/' + postKey).transaction((post) => {
+		if (post) {
+			if (post.likes && post.likes[userID]) {
+				post.likeCount--;
+				post.likes[userID] = null;
+			} else {
+				post.likeCount++;
+				if (!post.likes) {
+					post.likes = {};
+				}
+				post.likes[userID] = true;
+			}
+		}
+		return post;
+	});
+}
+
+/* Show Posts by User */
+function getProfilePosts(userID) {
+	firebase.database().ref("posts").once("value").then(snapshot => {
+		const posts = [];
+
+		snapshot.forEach(childSnapshot => {
+			const postData = childSnapshot.val();
+			postData.key = childSnapshot.key;
+			if (postData.userID === userID) {
+				posts.unshift(postData);
+			}
+		});
+		
+		return posts;
+	}).catch(error => {
+		console.error("Error fetching posts:", error);
+		return [];
+	});
+}
+
+/* Time Since Post */
+function timeSincePost(postDate) {
+	var dateString = new Date().toISOString();
+	var currentDate = new Date(dateString);
+	var datePosted = new Date(postDate);
+
+	var seconds = Math.round((currentDate.getTime() - datePosted.getTime()) / 1000);
+	var timeSince;
+
+	if (seconds < 60) {
+		timeSince = "Just Now";
+	} else if (seconds < 3600) {
+		timeSince = Math.round(seconds / 60) + "m ago";
+	} else if (seconds < 86400) {
+		timeSince = Math.round(seconds / 3600) + "h ago";
+	} else {
+		timeSince = Math.round(seconds / 86400) + "d ago";
+	}
+
+	return timeSince;
+}
+
 /* Start Listening for New Posts */
 export function startDatabaseQueries() {
 	var currentUserID = firebase.auth().currentUser.uid;
-	var recentPostsRef = firebase.database().ref('posts').limitToLast(100);
-	var userPostsRef = firebase.database().ref('user-posts/' + currentUserID);
+	var postsRef = firebase.database().ref('posts');
 
 	var fetchPosts = function(postsRef, sectionElement) {
 		postsRef.on("child_added", function(data) {
@@ -480,20 +540,40 @@ export function startDatabaseQueries() {
 			});
 
 			postElement.getElementsByClassName("post-content")[0].textContent = data.val().postContent;
-			postElement.getElementsByClassName("post-date")[0].textContent = data.val().postDate;
+			postElement.getElementsByClassName("post-date")[0].textContent = timeSincePost(data.val().postDate);
 
 			if (currentUserID != data.val().userID) {
 				postElement.getElementsByClassName("post-delete")[0].hidden = true;
 			}
 
+			postElement.getElementsByClassName("like-count")[0].textContent = data.val().likeCount || 0;
+
+			if (data.val().likes && data.val().likes[currentUserID]) {
+				postElement.getElementsByClassName("post-like")[0].querySelector("ion-icon").setAttribute("name", "heart");
+			} else {
+				postElement.getElementsByClassName("post-like")[0].querySelector("ion-icon").setAttribute("name", "heart-outline");
+			}
+
+			postElement.getElementsByClassName("post-like")[0].addEventListener('click', () => {
+				toggleLike(currentUserID, data.key);
+			});
+
 			postElement.getElementsByClassName("post-delete")[0].addEventListener('click', () => {
-				deletePost(currentUserID, data.key)
+				deletePost(currentUserID, data.key);
 			});
 		});
 		postsRef.on('child_changed', function(data) {
 			var containerElement = sectionElement.getElementsByClassName('posts-container')[0];
 			var postElement = containerElement.getElementsByClassName('post-' + data.key)[0];
 			postElement.getElementsByClassName('post-content')[0].innerText = data.val().postContent;
+			postElement.getElementsByClassName("post-date")[0].textContent = timeSincePost(data.val().postDate);
+			postElement.getElementsByClassName("like-count")[0].textContent = data.val().likeCount || 0;
+
+			if (data.val().likes && data.val().likes[currentUserID]) {
+				postElement.getElementsByClassName("post-like")[0].querySelector("ion-icon").setAttribute("name", "heart");
+			} else {
+				postElement.getElementsByClassName("post-like")[0].querySelector("ion-icon").setAttribute("name", "heart-outline");
+			}
 		});
 		postsRef.on('child_removed', function(data) {
 			var containerElement = sectionElement.getElementsByClassName('posts-container')[0];
@@ -502,13 +582,78 @@ export function startDatabaseQueries() {
 		});
 	};
 
+	var fetchProfile = function(postsRef, sectionElement) {
+		postsRef.on("child_added", function(data) {
+			if (data.val().userID == currentUserID) {
+				var containerElement = sectionElement.getElementsByClassName('posts-container')[0];
+				var postElement = createPostElement(data.key, data.val().userID);
+				containerElement.insertBefore(postElement, containerElement.firstChild);
+
+				firebase.database().ref("/users/" + data.val().userID).once("value").then((snapshot) => {
+					var displayName = (snapshot.val() && snapshot.val().displayName) || "Display Name";
+					var username = (snapshot.val() && snapshot.val().username) || "Username";
+
+					postElement.getElementsByClassName("post-displayname")[0].textContent = displayName;
+					postElement.getElementsByClassName("post-username")[0].textContent = "@" + username;
+				});
+
+				postElement.getElementsByClassName("post-content")[0].textContent = data.val().postContent;
+				postElement.getElementsByClassName("post-date")[0].textContent = timeSincePost(data.val().postDate);
+
+				if (currentUserID != data.val().userID) {
+					postElement.getElementsByClassName("post-delete")[0].hidden = true;
+				}
+
+				postElement.getElementsByClassName("like-count")[0].textContent = data.val().likeCount || 0;
+
+				if (data.val().likes && data.val().likes[currentUserID]) {
+					postElement.getElementsByClassName("post-like")[0].querySelector("ion-icon").setAttribute("name", "heart");
+				} else {
+					postElement.getElementsByClassName("post-like")[0].querySelector("ion-icon").setAttribute("name", "heart-outline");
+				}
+
+				postElement.getElementsByClassName("post-like")[0].addEventListener('click', () => {
+					toggleLike(currentUserID, data.key);
+				});
+
+				postElement.getElementsByClassName("post-delete")[0].addEventListener('click', () => {
+					deletePost(currentUserID, data.key);
+				});
+				
+			}
+			postsRef.on('child_changed', function(data) {
+				if (data.val().userID == currentUserID) {
+					var containerElement = sectionElement.getElementsByClassName('posts-container')[0];
+					var postElement = containerElement.getElementsByClassName('post-' + data.key)[0];
+					postElement.getElementsByClassName('post-content')[0].innerText = data.val().postContent;
+					postElement.getElementsByClassName("post-date")[0].textContent = timeSincePost(data.val().postDate);
+					postElement.getElementsByClassName("like-count")[0].textContent = data.val().likeCount || 0;
+		
+					if (data.val().likes && data.val().likes[currentUserID]) {
+						postElement.getElementsByClassName("post-like")[0].querySelector("ion-icon").setAttribute("name", "heart");
+					} else {
+						postElement.getElementsByClassName("post-like")[0].querySelector("ion-icon").setAttribute("name", "heart-outline");
+					}
+				}
+			});
+			postsRef.on('child_removed', function(data) {
+				if (data.val().userID == currentUserID) {
+					var containerElement = sectionElement.getElementsByClassName('posts-container')[0];
+					var post = containerElement.getElementsByClassName('post-' + data.key)[0];
+					post.parentElement.removeChild(post);
+				}
+			});
+		});
+	};
+
 	// Fetch all posts
-	fetchPosts(recentPostsRef, recentPosts);
-	fetchPosts(userPostsRef, userPosts);
+	fetchPosts(postsRef.limitToLast(100), recentPosts);
+
+	// Fetch Profile Posts
+	fetchProfile(postsRef, userPosts);
 
 	// Keep track of listeners
-	listeningFirebaseRefs.push(recentPostsRef);
-	listeningFirebaseRefs.push(userPostsRef);
+	listeningFirebaseRefs.push(postsRef);
 }
 
 /* Post Button Pressed */
@@ -522,35 +667,9 @@ function createPost() {
 			confirmButtonText: "Okay"
 		});
 	} else {
-		// Get Date
-		const months = [
-			"Jan",
-			"Feb",
-			"March",
-			"April",
-			"May",
-			"June",
-			"July",
-			"Aug",
-			"Sept",
-			"Oct",
-			"Nov",
-			"Dec"
-		]
-		
-		// Get Date
-		var currentDate = new Date();
-		var dd = currentDate.getDate();
-
-		if (dd < 10) {
-			dd = "0" + dd;
-		}
-
-		var mm = months[currentDate.getMonth()];
-
-		var yyyy = currentDate.getFullYear();
-
-		var dateString = mm + " " + dd + ", " + yyyy;
+		// Get Timestamp
+		var date = new Date();
+		var dateString = date.toISOString();
 
 		// Clear Text Field
 		document.getElementById("newpost-content").value = "";
@@ -579,7 +698,6 @@ function deletePost(userID, postID) {
 	}).then((result) => {
 		if (result.isConfirmed) {
 			firebase.database().ref().child("posts").child(postID).remove();
-			firebase.database().ref().child("user-posts").child(userID).child(postID).remove();
 		}
 	});
 }
