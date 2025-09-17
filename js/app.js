@@ -19,7 +19,7 @@ function trim(string) {
 
 /* Development Mode - Check Beta Status */
 export function checkBetaStatus() {
-	var betaStatus = false;
+	var betaStatus = true;
 
 	if (betaStatus) {
 		Swal.fire({
