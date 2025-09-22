@@ -607,7 +607,7 @@ export function startDatabaseQueries() {
 				}
 			});
 
-			postElement.getElementsByClassName("post-content")[0].textContent = data.val().postContent;
+			postElement.getElementsByClassName("post-content")[0].innerHTML = data.val().postContent.replace(/(?:\r\n|\r|\n)/g, '<br>');
 			postElement.getElementsByClassName("post-date")[0].textContent = timeSincePost(data.val().postDate);
 
 			if (currentUserID != data.val().userID) {
@@ -638,7 +638,7 @@ export function startDatabaseQueries() {
 		postsRef.on('child_changed', function(data) {
 			var containerElement = sectionElement.getElementsByClassName('posts-container')[0];
 			var postElement = containerElement.getElementsByClassName('post-' + data.key)[0];
-			postElement.getElementsByClassName('post-content')[0].innerText = data.val().postContent;
+			postElement.getElementsByClassName('post-content')[0].innerHTML = data.val().postContent.replace(/(?:\r\n|\r|\n)/g, '<br>');
 			postElement.getElementsByClassName("post-date")[0].textContent = timeSincePost(data.val().postDate);
 			postElement.getElementsByClassName("like-count")[0].textContent = data.val().likeCount || 0;
 			postElement.getElementsByClassName("comment-count")[0].textContent = data.val().commentCount || 0;
@@ -675,7 +675,7 @@ export function startDatabaseQueries() {
 					postElement.getElementsByClassName("post-username")[0].textContent = "@" + username;
 				});
 
-				postElement.getElementsByClassName("post-content")[0].textContent = data.val().postContent;
+				postElement.getElementsByClassName("post-content")[0].innerHTML = data.val().postContent.replace(/(?:\r\n|\r|\n)/g, '<br>');
 				postElement.getElementsByClassName("post-date")[0].textContent = timeSincePost(data.val().postDate);
 
 				if (currentUserID != data.val().userID) {
@@ -708,7 +708,7 @@ export function startDatabaseQueries() {
 				if (data.val().userID == currentUserID) {
 					var containerElement = sectionElement.getElementsByClassName('posts-container')[0];
 					var postElement = containerElement.getElementsByClassName('post-' + data.key)[0];
-					postElement.getElementsByClassName('post-content')[0].innerText = data.val().postContent;
+					postElement.getElementsByClassName('post-content')[0].innerHTML = data.val().postContent.replace(/(?:\r\n|\r|\n)/g, '<br>');
 					postElement.getElementsByClassName("post-date")[0].textContent = timeSincePost(data.val().postDate);
 					postElement.getElementsByClassName("like-count")[0].textContent = data.val().likeCount || 0;
 					postElement.getElementsByClassName("comment-count")[0].textContent = data.val().commentCount || 0;
@@ -744,7 +744,7 @@ export function startDatabaseQueries() {
 /* Post Button Pressed */
 function createPost() {
 	var postContent = document.getElementById("newpost-content").value;
-	
+
 	if (postContent == "" || !postContent.replace(/\s/g, '').length) {
 		Swal.fire({
 			title: "Post cannot be empty!",
@@ -929,7 +929,7 @@ function viewPost(post) {
 		usernameLabel.textContent = "@" + username;
 	});
 
-	contentLabel.innerText = post.val().postContent;
+	contentLabel.innerHTML = post.val().postContent.replace(/(?:\r\n|\r|\n)/g, '<br>');
 	dateLabel.textContent = timeSincePost(post.val().postDate);
 
 	var postView = document.getElementsByClassName("postmodal-post")[0];
@@ -979,7 +979,7 @@ function listenForComments(postID) {
 				}
 			});
 
-			commentElement.getElementsByClassName("comment-content")[0].textContent = data.val().commentContent;
+			commentElement.getElementsByClassName("comment-content")[0].innerHTML = data.val().commentContent.replace(/(?:\r\n|\r|\n)/g, '<br>');
 			commentElement.getElementsByClassName("comment-date")[0].textContent = timeSincePost(data.val().commentDate);
 
 			if (currentUserID != data.val().userID) {
@@ -1006,7 +1006,7 @@ function listenForComments(postID) {
 	});
 	commentsRef.on('child_changed', function(data) {
 		var commentElement = containerElement.getElementsByClassName('comment-' + data.key)[0];
-		commentElement.getElementsByClassName('comment-content')[0].innerText = data.val().commentContent;
+		commentElement.getElementsByClassName('comment-content')[0].innerHTML = data.val().commentContent.replace(/(?:\r\n|\r|\n)/g, '<br>');
 		commentElement.getElementsByClassName("comment-date")[0].textContent = timeSincePost(data.val().commentDate);
 		commentElement.getElementsByClassName("like-count")[0].textContent = data.val().likeCount || 0;
 
