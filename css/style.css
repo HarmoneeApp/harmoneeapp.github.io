@@ -172,7 +172,7 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 }
 
 .moved-down {
-	margin-top: 90px;
+	margin-top: 70px;
 }
 
 .tab-title {
@@ -183,7 +183,7 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 .newpost-view {
 	background-color: var(--text-color);
 	border-radius: 15px;
-	margin: 30px 10px 0 10px;
+	margin: 10px 10px 30px 10px;
 	height: 100px;
 }
 
@@ -233,14 +233,10 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	font-weight: 700;
 }
 
-.profile-container {
-	margin: 35px 0 15px 0;
-}
-
 .profile-header {
 	background-color: var(--text-color);
 	border-radius: 20px;
-	margin: 30px 10px 0 10px;
+	margin: 10px 10px 30px 10px;
 	height: 120px;
 }
 
@@ -433,7 +429,7 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 .post {
 	background-color: var(--text-color);
 	border-radius: 20px;
-	margin: 30px 10px 0 10px;
+	margin: 10px 10px 0 10px;
 	height: auto;
 }
 
@@ -645,7 +641,6 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	left: 10px;
 	right: 10px;
 	border-radius: 20px;
-	padding: 10px;
 	overflow: auto;
 }
 

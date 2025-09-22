@@ -76,45 +76,43 @@
 		</div>
 		<!-- My Profile -->
 		<div id="profile" class="tab-content">
-			<div class="profile-container">
-				<div class="profile-header">
-					<img class="profile-image">
-					<div class="profile-info">
-						<br>
-						<span class="profile-name">Name</span>
-						<br>
-						<span class="profile-username">Username</span>
-						<div class="edit-button" id="editProfile">Edit Profile</div>
-					</div>
+			<div class="profile-header">
+				<img class="profile-image">
+				<div class="profile-info">
+					<br>
+					<span class="profile-name">Name</span>
+					<br>
+					<span class="profile-username">Username</span>
+					<div class="edit-button" id="editProfile">Edit Profile</div>
 				</div>
-				<div id="edit-profile" class="modal">
-					<div class="modal-content">
-						<div class="modal-header">
-							<p class="header-text">Edit Profile</p>
-						</div>
-						<div class="modal-body">
-							<center>
-								<div class="update-avatar">
-									<input type="file" accept="image/jpeg, image/png" id="edit-avatar">
-									<label for="edit-avatar" id="avatar-button">Upload</label>
-								</div>
-							</center>
-							<label for="edit-displayname" class="modal-label">Display Name</label>
-							<input type="text" class="modal-input" spellcheck="false" id="edit-displayname">
-							<label for="edit-username" class="modal-label">Username</label>
-							<input type="text" class="modal-input" spellcheck="false" id="edit-username">
-						</div>
-						<div class="modal-footer">
-							<div class="footer-button" id="closeModal">Cancel</div>
-							<div class="footer-button" id="updateProfileInfo">Save Changes</div>
-						</div>
+			</div>
+			<div id="edit-profile" class="modal">
+				<div class="modal-content">
+					<div class="modal-header">
+						<p class="header-text">Edit Profile</p>
+					</div>
+					<div class="modal-body">
+						<center>
+							<div class="update-avatar">
+								<input type="file" accept="image/jpeg, image/png" id="edit-avatar">
+								<label for="edit-avatar" id="avatar-button">Upload</label>
+							</div>
+						</center>
+						<label for="edit-displayname" class="modal-label">Display Name</label>
+						<input type="text" class="modal-input" spellcheck="false" id="edit-displayname">
+						<label for="edit-username" class="modal-label">Username</label>
+						<input type="text" class="modal-input" spellcheck="false" id="edit-username">
+					</div>
+					<div class="modal-footer">
+						<div class="footer-button" id="closeModal">Cancel</div>
+						<div class="footer-button" id="updateProfileInfo">Save Changes</div>
 					</div>
 				</div>
 			</div>
-			<!-- Posts -->
-			<div id="profile-posts">
-				<div class="posts-container"></div>
-			</div>
+		</div>
+		<!-- Posts -->
+		<div id="profile-posts">
+			<div class="posts-container"></div>
 		</div>
 		<!-- Global Modals -->
 		<div id="view-post" class="global-modal">

@@ -722,7 +722,8 @@ export function startDatabaseQueries() {
 				if (data.val().userID == currentUserID) {
 					var containerElement = sectionElement.getElementsByClassName('posts-container')[0];
 					var post = containerElement.getElementsByClassName('post-' + data.key)[0];
-					post.parentElement.removeChild(post);
+					
+					containerElement.removeChild(post);
 				}
 			});
 		});
@@ -896,13 +897,15 @@ function viewPost(post) {
 	var modal = document.getElementById("view-post");
 	modal.style.display = "block";
 
+	var commentFunction = function() {
+		return createComment(post.key);
+	}
+
 	modal.addEventListener('click', function(e) {
 		if (e.target == this) {
 			modal.style.display = "none";
 
-			document.getElementById("createComment").removeEventListener('click', () => {
-				createComment(post.key);
-			});
+			document.getElementById("createComment").removeEventListener('click', commentFunction);
 		}
 	});
 
@@ -929,14 +932,11 @@ function viewPost(post) {
 
 	var postView = document.getElementsByClassName("postmodal-post")[0];
 	var commentView = document.getElementsByClassName("comment-container")[0];
-
-	var postHeight = postView.offsetHeight + 10;
+	var postHeight = postView.offsetHeight + 20;
 
 	commentView.style.top = `${postHeight}px`;
 
-	document.getElementById("createComment").addEventListener('click', () => {
-		createComment(post.key);
-	});
+	document.getElementById("createComment").addEventListener('click', commentFunction);
 
 	listenForComments(post.key);
 }
@@ -1016,7 +1016,7 @@ function listenForComments(postID) {
 	});
 	commentsRef.on('child_removed', function(data) {
 		var comment = containerElement.getElementsByClassName('comment-' + data.key)[0];
-		comment.parentElement.removeChild(comment);
+		containerElement.removeChild(comment);
 	});
 
 	// Keep track of listeners
