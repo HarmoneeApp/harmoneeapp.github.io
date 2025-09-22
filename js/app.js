@@ -683,6 +683,7 @@ export function startDatabaseQueries() {
 				}
 
 				postElement.getElementsByClassName("like-count")[0].textContent = data.val().likeCount || 0;
+				postElement.getElementsByClassName("comment-count")[0].textContent = data.val().commentCount || 0;
 
 				if (data.val().likes && data.val().likes[currentUserID]) {
 					postElement.getElementsByClassName("post-like")[0].querySelector("ion-icon").setAttribute("name", "heart");
@@ -710,6 +711,7 @@ export function startDatabaseQueries() {
 					postElement.getElementsByClassName('post-content')[0].innerText = data.val().postContent;
 					postElement.getElementsByClassName("post-date")[0].textContent = timeSincePost(data.val().postDate);
 					postElement.getElementsByClassName("like-count")[0].textContent = data.val().likeCount || 0;
+					postElement.getElementsByClassName("comment-count")[0].textContent = data.val().commentCount || 0;
 		
 					if (data.val().likes && data.val().likes[currentUserID]) {
 						postElement.getElementsByClassName("post-like")[0].querySelector("ion-icon").setAttribute("name", "heart");
