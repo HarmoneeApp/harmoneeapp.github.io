@@ -1,32 +1,42 @@
-html {
-	font-family: "Nunito", sans-serif;
-	font-weight: 600;
-	background-size: cover;
-	-webkit-background-size: cover;
-	-moz-background-size: cover;
-	-o-background-size: cover;
-	background: #ff512f;
-	background: linear-gradient(#ff512f, #dd2476);
-	background: -webkit-linear-gradient(#ff512f, #dd2476);
-	background: -moz-linear-gradient(#ff512f, #dd2476);
-	background: -ms-linear-gradient(#ff512f, #dd2476);
-	background: -o-linear-gradient(#ff512f, #dd2476);
-	background-repeat:no-repeat;
-	color: white;
+:root {
+	--primary-color: #ff512f;
+	--secondary-color: #dd2476;
+	--accent-color: #ff716c;
+	--text-color: white;
+	--font-main: 'Nunito', sans-serif;
 }
 
-html, body {
+* {
+	font-family: var(--font-main);
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+	display: none;
+}
+
+html {
+	font-weight: 600;
+	background: linear-gradient(var(--primary-color), var(--secondary-color));
+	background-repeat: no-repeat;
+	background-size: cover;
+	color: var(--text-color);
+}
+
+body {
 	overflow: auto;
 }
 
 ion-icon {
-	color: #ff512f;
+	color: var(--primary-color);
 	font-size: 20px;
 }
 
-button {
-	font-family: "Nunito", sans-serif;
-	font-weight: 700;
+button, .button, .menu-item, .footer-button, .newpost-button {
+	cursor: pointer;
+	border: none;
+	outline: none;
 }
 
 .centered {
@@ -38,7 +48,7 @@ button {
 	height: 160px;
 	width: 160px;
 	border-radius: 20%;
-	border: 5px solid white;
+	border: 5px solid var(--text-color);
 }
 
 .avatar-icon {
@@ -55,19 +65,14 @@ button {
 
 .button {
 	text-decoration: none;
-	color: #ff512f;
 	font-size: 28.5px;
 	font-weight: 800;
 	display: inline-block;
 	border-radius: 20px;
 	text-align: center;
-	color: #ff512f;
-	padding-top: 15px;
-	padding-bottom: 15px;
-	padding-left: 20px;
-	padding-right: 20px;
-	background-color: white;
-	cursor: pointer;
+	padding: 15px 20px;
+	background-color: var(--text-color);
+	color: var(--primary-color);
 }
 
 .button:hover {
@@ -83,44 +88,25 @@ button {
 }
 
 .tab {
-	background-color: white;
+	background-color: var(--text-color);
 	border-radius: 15px;
-	margin-top: 15px;
-	margin-left: 10px;
-	margin-right: 10px;
+	margin: 15px 10px 0 10px;
 	overflow: hidden;
 	height: 50px;
 }
 
 .tab button {
 	background-color: inherit;
-	color: #ff512f;
+	color: var(--primary-color);
 	float: left;
-	border: none;
-	outline: none;
-	cursor: pointer;
 	height: 50px;
 	text-align: center;
 	margin: auto;
-	padding-left: 15px;
-	padding-right: 15px;
+	padding: 0 15px;
 	transition: 0.3s;
 	font-size: 18px;
 	line-height: 50px;
 	font-weight: 800;
-}
-
-.tab button.profile-button {
-	float: right;
-	height: 35px;
-	margin-top: 4.5px;
-	padding-left: 0px;
-	padding-right: 0px;
-	margin-right: 15px;
-}
-
-.tab button.profile-button:hover {
-	background-color: white;
 }
 
 .tab button:hover {
@@ -132,15 +118,22 @@ button {
 	transition: color 0.15s ease-in;
 }
 
+.tab button.profile-button {
+	float: right;
+	height: 35px;
+	margin: 4.5px 15px 0 0;
+	padding: 0;
+	border-radius: 50%;
+}
+
 .profile-menu {
 	display: none;
 	width: fit-content;
-	background-color: white;
+	background-color: var(--text-color);
 	border-radius: 15px;
 	z-index: 1;
 	float: right;
-	margin-top: 10px;
-	margin-right: 10px;
+	margin: 10px 10px 0 0;
 }
 
 .show {
@@ -150,15 +143,11 @@ button {
 .menu-item {
 	display: inline-block;
 	background-color: inherit;
-	color: #ff512f;
-	border: none;
-	outline: none;
-	cursor: pointer;
+	color: var(--primary-color);
 	height: 50px;
 	text-align: center;
 	margin: auto;
-	padding-left: 15px;
-	padding-right: 15px;
+	padding: 0 15px 0 15px;
 	transition: 0.3s;
 	font-size: 18px;
 	line-height: 50px;
@@ -192,47 +181,39 @@ button {
 }
 
 .newpost-view {
-	background-color: white;
+	background-color: var(--text-color);
 	border-radius: 15px;
-	margin-top: 30px;
-	margin-left: 10px;
-	margin-right: 10px;
+	margin: 30px 10px 0 10px;
 	height: 100px;
 }
 
 .newpost-button {
-	background-color: #ff512f;
-	color: white;
-	border: none;
-	outline: none;
-	cursor: pointer;
+	background-color: var(--primary-color);
+	color: var(--text-color);
 	text-align: center;
 	transition: 0.3s;
 	font-size: 20px;
 	line-height: 40px;
 	float: right;
 	height: 40px;
-	margin-top: 15px;
-	margin-right: 15px;
-	padding-left: 15px;
-	padding-right: 15px;
+	margin: 15px 15px 0 0;
+	padding: 0 15px 0 15px;
 	border-radius: 10px;
 	font-weight: 800;
 }
 
 .newpost-button:hover {
-	background-color: #ff716c;
+	background-color: var(--accent-color);
 }
 
 .post-textarea {
-	margin-top: 17px;
-	margin-left: 15px;
+	margin: 17px 0 0 15px;
 	width: calc(100% - 15px - 15px - 64.81px - 15px);
 	border: none;
-	background-color: white;
+	background-color: var(--text-color);
 	font: inherit;
 	font-size: 20px;
-	color: #ff512f;
+	color: var(--primary-color);
 	height: 40px;
 	resize: none;
 	overflow: hidden;
@@ -245,25 +226,21 @@ button {
 }
 
 #count {
-	margin-top: 10px;
+	margin: 10px 20px 0 0;
 	font-size: 18px;
-	margin-right: 20px;
 	float: right;
-	color: #ff512f;
+	color: var(--primary-color);
 	font-weight: 700;
 }
 
 .profile-container {
-	margin-top: 35px;
-	margin-bottom: 15px;
+	margin: 35px 0 15px 0;
 }
 
 .profile-header {
-	background-color: white;
+	background-color: var(--text-color);
 	border-radius: 20px;
-	margin-top: 30px;
-	margin-left: 10px;
-	margin-right: 10px;
+	margin: 30px 10px 0 10px;
 	height: 120px;
 }
 
@@ -272,9 +249,8 @@ button {
 	vertical-align: middle;
 	width: 80px;
 	height: 80px;
-	border: 5px solid black;
-	margin-top: 15px;
-	margin-left: 15px;
+	border: 5px solid var(--primary-color);
+	margin: 15px 0 0 15px;
 	border-radius: 20px;
 }
 
@@ -283,21 +259,20 @@ button {
 	vertical-align: middle;
 	height: 80px;
 	width: calc(100% - 125px);
-	margin-top: 15px;
-	margin-left: 5px;
+	margin: 15px 0 0 5px;
 }
 
 .profile-name {
 	font-size: 20px;
 	font-weight: 700;
-	color: #ff512f;
+	color: var(--primary-color);
 	line-height: 20px;
 }
 
 .profile-username {
 	font-size: 20px;
 	font-weight: 700;
-	color: #ff512f;
+	color: var(--primary-color);
 	line-height: 20px;
 	margin-top: -20px;
 }
@@ -308,8 +283,8 @@ button {
 
 .edit-button {
 	position: static;
-	background-color: #ff512f;
-	color: white;
+	background-color: var(--primary-color);
+	color: var(--text-color);
 	padding: 0.5rem 0.75rem;
 	border-radius: 15px;
 	cursor: pointer;
@@ -343,12 +318,12 @@ button {
 
 .modal-header {
 	padding: 2px 16px;
-	color: #ff512f;
-	border-bottom: 2px solid #ff512f;
+	color: var(--primary-color);
+	border-bottom: 2px solid var(--primary-color);
 }
 
 .close {
-	color: #ff512f;
+	color: var(--primary-color);
 	float: right;
 	font-size: 28px;
 	font-weight: 800;
@@ -369,7 +344,7 @@ button {
 
 .modal-body {
 	padding: 2px 16px;
-	color: #ff512f;
+	color: var(--primary-color);
 }
 
 .body-text {
@@ -379,7 +354,7 @@ button {
 
 .modal-label {
 	display: block;
-	color: #ff512f;
+	color: var(--primary-color);
 	font-size: 16px;
 	font-weight: 700;
 	margin-top: 15px;
@@ -389,9 +364,9 @@ button {
 
 .modal-input {
 	display: block;
-	background-color: #ff512f;
-	color: white;
-	border: 2px solid #ff512f;
+	background-color: var(--primary-color);
+	color: var(--text-color);
+	border: 2px solid var(--primary-color);
 	border-radius: 10px;
 	width: 100%;
 	font: inherit;
@@ -408,24 +383,19 @@ button {
 
 .modal-footer {
 	padding: 2px 16px;
-	color: #ff512f;
-	border-top: 2px solid #ff512f;
+	color: var(--primary-color);
+	border-top: 2px solid var(--primary-color);
 }
 
 .footer-button {
 	display: inline-block;
-	background-color: #ff512f;
-	color: white;
+	background-color: var(--primary-color);
+	color: var(--text-color);
 	font-size: 18px;
 	font-weight: 700;
-	padding-top: 7.5px;
-	padding-bottom: 7.5px;
-	padding-left: 10px;
-	padding-right: 10px;
-	margin-top: 10px;
-	margin-bottom: 10px;
+	padding: 7.5px 10px;
+	margin: 10px 0;
 	border-radius: 12.5px;
-	cursor: pointer;
 }
 
 .footer-button:last-of-type {
@@ -448,15 +418,12 @@ button {
 
 #avatar-button {
 	display: inline-block;
-	background-color: white;
-	color: #ff512f;
+	background-color: var(--text-color);
+	color: var(--primary-color);
 	cursor: pointer;
 	border-radius: 15px;
 	text-align: center;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	padding-left: 15px;
-	padding-right: 15px;
+	padding: 10px 15px;
 	font-size: 20px;
 	font-weight: 700;
 	line-height: 20px;
@@ -464,11 +431,9 @@ button {
 }
 
 .post {
-	background-color: white;
+	background-color: var(--text-color);
 	border-radius: 20px;
-	margin-top: 30px;
-	margin-left: 10px;
-	margin-right: 10px;
+	margin: 30px 10px 0 10px;
 	height: auto;
 }
 
@@ -476,30 +441,28 @@ button {
 	border-top-left-radius: 20px;
 	border-top-right-radius: 20px;
 	height: 54px;
-	border-bottom: 1px solid #ff512f;
+	border-bottom: 1px solid var(--primary-color);
 }
 
 .post-avatar {
 	display: inline-block;
 	height: 35px;
 	width: 35px;
-	margin-top: 10px;
-	margin-left: 10px;
-	margin-bottom: 6px;
+	margin: 10px 0 6px 10px;
+	border: 2px solid var(--primary-color);
 	border-radius: 25%;
 }
 
 .post-info {
 	display: inline-block;
-	margin-top: 10px;
-	margin-left: 5px;
+	margin: 10px 0 0 5px;
 	vertical-align: top;
 }
 
 .post-displayname {
 	font-size: 15px;
 	font-weight: 800;
-	color: #ff512f;
+	color: var(--primary-color);
 	float: left;
 	clear: left;
 }
@@ -507,7 +470,7 @@ button {
 .post-username {
 	font-size: 13px;
 	font-weight: 700;
-	color: #ff512f;
+	color: var(--primary-color);
 	float: left;
 	clear: left;
 	margin-top: -2.5px;
@@ -516,22 +479,18 @@ button {
 .post-content {
 	font-size: 15px;
 	font-weight: 700;
-	margin-top: 5px;
-	margin-left: 10px;
-	margin-right: 10px;
-	margin-bottom: 5px;
-	color: #ff512f;
+	margin: 5px 10px;
+	color: var(--primary-color);
 	height: auto;
 }
 
 .post-footer {
 	height: auto;
-	border-top: 1px solid #ff512f;
+	border-top: 1px solid var(--primary-color);
 	border-bottom-left-radius: 20px;
 	border-bottom-right-radius: 20px;
 	text-align: right;
-	padding-top: 5px;
-	padding-bottom: 5px;
+	padding: 5px 0;
 }
 
 .post-actions {
@@ -550,7 +509,7 @@ button {
 }
 
 .like-count {
-	color: #ff512f;
+	color: var(--primary-color);
 	margin-left: 2.5px;
 	cursor: default;
 }
@@ -564,7 +523,7 @@ button {
 }
 
 .comment-count {
-	color: #ff512f;
+	color: var(--primary-color);
 	margin-left: 2.5px;
 	cursor: default;
 }
@@ -578,7 +537,304 @@ button {
 .post-date {
 	font-size: 15px;
 	font-weight: 700;
+	margin: 0 10px;
+	color: var(--primary-color);
+}
+
+#view-post {
+	display: none;
+}
+
+#view-profile {
+	display: none;
+}
+
+.global-modal {
+	position: absolute;
+	background-color: rgb(0, 0, 0, 0.5);
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 2;
+}
+
+.postmodal-container {
+	position: relative;
+	background: linear-gradient(var(--primary-color), var(--secondary-color));
+	background-repeat: no-repeat;
+	background-size: cover;
+	border-radius: 20px;
+	margin: 20px;
+	padding: 10px;
+	height: calc(100% - 150px);
+}
+
+.postmodal-post {
+	background-color: var(--text-color);
+	border-radius: 20px;
+	height: auto;
+}
+
+.postmodal-header {
+	border-top-left-radius: 20px;
+	border-top-right-radius: 20px;
+	height: 54px;
+	border-bottom: 1px solid var(--primary-color);
+}
+
+.postmodal-avatar {
+	display: inline-block;
+	height: 35px;
+	width: 35px;
+	margin: 10px 0 10px 10px;
+	border-radius: 25%;
+}
+
+.postmodal-info {
+	display: inline-block;
+	margin: 10px 0 0 5px;
+	vertical-align: top;
+}
+
+.postmodal-displayname {
+	font-size: 15px;
+	font-weight: 800;
+	color: var(--primary-color);
+	float: left;
+	clear: left;
+}
+
+.postmodal-username {
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--primary-color);
+	float: left;
+	clear: left;
+	margin-top: -2.5px;
+}
+
+.postmodal-content {
+	font-size: 15px;
+	font-weight: 700;
+	margin: 5px 10px;
+	color: var(--primary-color);
+	height: auto;
+}
+
+.postmodal-footer {
+	height: auto;
+	border-top: 1px solid var(--primary-color);
+	border-bottom-left-radius: 20px;
+	border-bottom-right-radius: 20px;
+	text-align: right;
+	padding: 5px 0;
+}
+
+.postmodal-date {
+	font-size: 15px;
+	font-weight: 700;
+	margin: 0 10px;
+	color: var(--primary-color);
+}
+
+.comment-container {
+	position: absolute;
+	top: 0;
+	bottom: 10px;
+	left: 10px;
+	right: 10px;
+	border-radius: 20px;
+	padding: 10px;
+	overflow: auto;
+}
+
+.comment {
+	background-color: var(--text-color);
+	border-radius: 20px;
+	margin: 10px 0 0 0;
+	height: auto;
+}
+
+.comment-header {
+	border-top-left-radius: 20px;
+	border-top-right-radius: 20px;
+	height: 54px;
+	border-bottom: 1px solid var(--primary-color);
+}
+
+.comment-avatar {
+	display: inline-block;
+	height: 35px;
+	width: 35px;
+	margin: 10px 0 6px 10px;
+	border: 2px solid var(--primary-color);
+	border-radius: 25%;
+}
+
+.comment-info {
+	display: inline-block;
+	margin: 10px 0 0 5px;
+	vertical-align: top;
+}
+
+.comment-displayname {
+	font-size: 15px;
+	font-weight: 800;
+	color: var(--primary-color);
+	float: left;
+	clear: left;
+}
+
+.comment-username {
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--primary-color);
+	float: left;
+	clear: left;
+	margin-top: -2.5px;
+}
+
+.comment-content {
+	font-size: 15px;
+	font-weight: 700;
+	margin: 5px 10px;
+	color: var(--primary-color);
+	height: auto;
+}
+
+.comment-footer {
+	height: auto;
+	border-top: 1px solid var(--primary-color);
+	border-bottom-left-radius: 20px;
+	border-bottom-right-radius: 20px;
+	text-align: right;
+	padding: 5px 0;
+}
+
+.comment-actions {
+	display: inline;
+	vertical-align: middle;
+	align-items: center;
+	height: 20px;
+}
+
+.comment-like {
+	display: flex;
+	align-items: center;
 	margin-left: 10px;
-	margin-right: 10px;
-	color: #ff512f;
+	cursor: pointer;
+	float: left;
+}
+
+.like-count {
+	color: var(--primary-color);
+	margin-left: 2.5px;
+	cursor: default;
+}
+
+.comment-delete {
+	margin-left: 10px;
+	cursor: pointer;
+	float: left;
+}
+
+.comment-date {
+	font-size: 15px;
+	font-weight: 700;
+	margin: 0 10px;
+	color: var(--primary-color);
+}
+
+.newcomment-view {
+	border-radius: 15px;
+	margin: 30px;
+	height: 80px;
+}
+
+.newcomment-button {
+	background-color: var(--secondary-color);
+	color: var(--text-color);
+	transition: 0.3s;
+	font-size: 18px;
+	float: right;
+	height: 36px;
+	width: 80px;
+	margin: 20px 30px 0 0;
+	border-radius: 15px;
+	font-weight: 800;
+}
+
+.newcomment-button:hover {
+	background-color: var(--accent-color);
+}
+
+.newcomment-textarea {
+	border-radius: 15px;
+	margin: 20px 0 20px 30px;
+	width: calc(100% - 160px);
+	border: none;
+	background-color: var(--text-color);
+	font: inherit;
+	font-size: 18px;
+	color: var(--primary-color);
+	height: 40px;
+	resize: none;
+	overflow: hidden;
+	line-height: 36px;
+	font-weight: 700;
+	padding-left: 10px;
+}
+
+.newcomment-textarea:focus {
+	outline: none;
+}
+
+.profilemodal-container {
+	background: linear-gradient(var(--primary-color), var(--secondary-color));
+	background-repeat: no-repeat;
+	background-size: cover;
+	border-radius: 20px;
+	margin: 50px 30px;
+	padding: 10px;
+	height: calc(100% - 100px)
+}
+
+.profilemodal-header {
+	background-color: var(--text-color);
+	border-radius: 20px;
+	height: 86px;
+}
+
+.profilemodal-image { 
+	display: inline-block;
+	height: 60px;
+	width: 60px;
+	margin: 10px 0 0 10px;
+	border: 3px solid var(--primary-color);
+	border-radius: 25%;
+}
+
+.profilemodal-info {
+	display: inline-block;
+	height: 66px;
+	margin: 20px 0 0 5px;
+	vertical-align: top;
+}
+
+.profilemodal-displayname {
+	font-size: 20px;
+	font-weight: 800;
+	color: var(--primary-color);
+	float: left;
+	clear: left;
+}
+
+.profilemodal-username {
+	font-size: 16px;
+	font-weight: 700;
+	color: var(--primary-color);
+	float: left;
+	clear: left;
+	margin-top: -2.5px;
 }

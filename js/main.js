@@ -18,7 +18,7 @@ function showTab(evt, tabName) {
 
 document.getElementById("default").click();
 
-function showView(evt, viewName) {
+function showView(viewName) {
 	var i, tabContent, tabLinks;
 
 	tabContent = document.getElementsByClassName("tab-content");

@@ -59,26 +59,7 @@
 			</div>
 			<!-- Posts -->
 			<div id="recent-posts">
-				<div class="posts-container">
-					<div class="post post-test">
-						<div class="post-header">
-							<img class="post-avatar" src="img/avatar.png">
-							<div class="post-info">
-								<span class="post-displayname">Display Name</span>
-								<span class="post-username">Username</span>
-							</div>
-						</div>
-						<p class="post-content">Test</p>
-						<div class="post-footer">
-							<div class="post-actions">
-								<div class="post-like"><ion-icon name="heart-outline"></ion-icon><span class="like-count">0</span></div>
-								<div class="post-comment"><ion-icon name="chatbox-outline"></ion-icon><span class="comment-count">0</span></div>
-								<div class="post-delete"><ion-icon name="trash-outline"></ion-icon></div>
-							</div>
-							<span class="post-date">Date</span>
-						</div>
-					</div>
-				</div>
+				<div class="posts-container"></div>
 			</div>
 		</div>
 		<!-- Search -->
@@ -93,7 +74,7 @@
 				<p class="tab-title">Coming Soon</p>
 			</center>
 		</div>
-		<!-- Profile -->
+		<!-- My Profile -->
 		<div id="profile" class="tab-content">
 			<div class="profile-container">
 				<div class="profile-header">
@@ -122,8 +103,6 @@
 							<input type="text" class="modal-input" spellcheck="false" id="edit-displayname">
 							<label for="edit-username" class="modal-label">Username</label>
 							<input type="text" class="modal-input" spellcheck="false" id="edit-username">
-							<label for="edit-website" class="modal-label">Website</label>
-							<input type="text" class="modal-input" spellcheck="false" id="edit-website">
 						</div>
 						<div class="modal-footer">
 							<div class="footer-button" id="closeModal">Cancel</div>
@@ -133,14 +112,47 @@
 				</div>
 			</div>
 			<!-- Posts -->
-			<div id="user-posts">
+			<div id="profile-posts">
 				<div class="posts-container"></div>
+			</div>
+		</div>
+		<!-- Global Modals -->
+		<div id="view-post" class="global-modal">
+			<div class="postmodal-container">
+				<div class="postmodal-post">
+					<div class="postmodal-header">
+						<img class="postmodal-avatar">
+						<div class="postmodal-info">
+							<span class="postmodal-displayname"></span>
+							<span class="postmodal-username"></span>
+						</div>
+					</div>
+					<p class="postmodal-content"></p>
+					<div class="postmodal-footer">
+						<span class="postmodal-date"></span>
+					</div>
+				</div>
+				<div class="comment-container"></div>
+			</div>
+			<textarea id="newcomment-content" class="newcomment-textarea" spellcheck="false" maxlength="420" placeholder="What's happening?" onkeyup="autogrow(this)"></textarea>
+			<button class="newcomment-button" id="createComment">Post</button>
+		</div>
+		<div id="view-profile" class="global-modal">
+			<div class="profilemodal-container">
+				<div class="profilemodal-header">
+					<img class="profilemodal-image">
+					<div class="profilemodal-info">
+						<span class="profilemodal-displayname">Display Name</span>
+						<span class="profilemodal-username">Username</span>
+					</div>
+				</div>
 			</div>
 		</div>
 		<!-- Other Scripts -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script src="https://unpkg.com/sweetalert2/dist/sweetalert2.all.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+		<!-- Local Scripts -->
 		<script type="module" src="js/app.js"></script>
 		<script src="js/main.js"></script>
 		<!-- Custom Scripts -->
@@ -209,7 +221,17 @@
 			}
 
 			// Post Character Count
-			$("#postcontent").keyup(function() {
+			$("#newpost-content").keyup(function() {
+				var characterCount = $(this).val().length,
+				current_count = $("#current_count"),
+				maximum_count = $("maximum_count"),
+				count = $("#count");
+
+				current_count.text(characterCount);
+			});
+
+			// Comment Character Count
+			$("#newcomment-content").keyup(function() {
 				var characterCount = $(this).val().length,
 				current_count = $("#current_count"),
 				maximum_count = $("maximum_count"),

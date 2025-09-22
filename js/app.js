@@ -46,23 +46,23 @@ function checkDisplayName(displayName) {
 
 /* Firebase Auth - Check Username */
 function checkUsername(username) {
-	var illegalChars = /\W/;
+	var allowedChars = /^[a-zA-Z0-9_]+$/;
 	var errorMessage = null;
 
 	var databaseRef = firebase.database().ref("usernames");
 	
 	databaseRef.once("value").then(function(snapshot) {
 		if (snapshot.child(username).exists()) {
-			errorMessage = "The username you provided is not available.";
+			errorMessage = "Username is not available.";
 		} else {
 			if (username == "") {
 				errorMessage = "Please fill in all fields.";
-			} else if (username.length < 5) {
-				errorMessage = "The username you provided is too short.";
-			} else if (username.length > 15) {
-				errorMessage = "The username you provided is too long.";
-			} else if (illegalChars.test(username)) {
-				errorMessage = "The username you provided contains illegal characters.";
+			} else if (username.length < 5 || username.length > 15) {
+				errorMessage = "Username must be between 5 and 15 characters in length.";
+			} else if (!allowedChars.test(username)) {
+				errorMessage = "Username contains invalid characters. Only letters, numbers, and underscores are allowed.";
+			} else if (username.startsWith('_')) {
+				errorMessage = "Username cannot start with an underscore.";
 			}
 		}
 	});
@@ -116,27 +116,12 @@ function checkPassword(password, confirm) {
 
 function setUserData(userID, displayName, username) {
 	var userData = {
-		"avatarURL": "https://harmoneeapp.com/beta/img/avatar.png",
 		"displayName": displayName,
 		"username": username,
 		"verified": "false"
 	};
 
 	firebase.database().ref("users/" + userID).set(userData);
-}
-
-function getUserData(userID, callback) {
-	firebase.database().ref("users/" + userID).once("value").then(function(snapshot) {
-		if (snapshot.exists()) {
-			callback(snapshot.val());
-		} else {
-			callback(null); // No data found for this user
-		}
-	})
-	.catch(function(error) {
-		console.error("Error fetching user data:", error);
-		callback(null); // Handle error gracefully
-	});
 }
 
 /* Firebase Auth - Create User */
@@ -215,6 +200,8 @@ function createUser() {
 				confirmButtonText: "Okay"
 			}).then((value) => {
 				setUserData(uid, displayName, username);
+
+				firebase.database().ref("usernames/" + username).set(uid);
 
 				setTimeout(function() {
 					window.location.replace("index.html");
@@ -318,18 +305,18 @@ if (document.getElementById('signOutUser')) {
 }
 
 /* Update User Data */
-function updateUserData(userID, username) {
-	var userData = {"username": username};
+function updateUserData(userID, displayName, username) {
+	var userData = {
+		"displayName": displayName,
+		"username": username
+	};
 
 	firebase.database().ref("users/" + userID).set(userData);
 }
 
 /* Upload + Change Profile Picture */
 async function uploadAvatar(event) {
-	var newImage = event.target.files[0];
-
 	var user = firebase.auth().currentUser;
-
 	const file = event.target.files[0];
 
 	if (!file) {
@@ -338,11 +325,28 @@ async function uploadAvatar(event) {
 	}
 	
 	const { data, error } = await supabase.storage.from("avatars").getPublicUrl(user.uid + ".png");
+
 	if (error) {
 		const { data1, error1 } = await supabase.storage.from('avatars').upload(user.uid + '.png', file, {
 			cacheControl: '3600',
 			upsert: true,
 			contentType: file.type
+		});
+
+		Swal.fire({
+			title: "Your profile picture was successfully updated.",
+			icon: "success",
+			confirmButtonText: "Okay"
+		}).then((value) => {
+			setTimeout(function() {
+				updateProfilePicture();
+			}, 200);
+		}).catch(function(error) {
+			Swal.fire({
+				title: "Something went wrong. Please try again.",
+				icon: "error",
+				confirmButtonText: "Okay"
+			});
 		});
 	} else {
 		const { data1, error1 } = await supabase.storage.from('avatars').update(user.uid + '.png', file, {
@@ -350,31 +354,23 @@ async function uploadAvatar(event) {
 			upsert: true,
 			contentType: file.type
 		});
-		console.log("Image exists, need to replace");
-	}
 
-	var username;
-
-	firebase.database().ref("users").once("value").then((snapshot) => {
-		username = snapshot.child(user.uid).child("username").val();
-	});
-
-	updateUserData(user.uid, username);
-	Swal.fire({
-		title: "Your profile picture was successfully updated.",
-		icon: "success",
-		confirmButtonText: "Okay"
-	}).then((value) => {
-		setTimeout(function() {
-			updateProfilePicture();
-		}, 200);
-	}).catch(function(error) {
 		Swal.fire({
-			title: "Something went wrong. Please try again.",
-			icon: "error",
+			title: "Your profile picture was successfully updated.",
+			icon: "success",
 			confirmButtonText: "Okay"
+		}).then((value) => {
+			setTimeout(function() {
+				updateProfilePicture();
+			}, 200);
+		}).catch(function(error) {
+			Swal.fire({
+				title: "Something went wrong. Please try again.",
+				icon: "error",
+				confirmButtonText: "Okay"
+			});
 		});
-	});
+	}
 }
 if (document.getElementById('edit-avatar')) {
 	document.getElementById('edit-avatar').addEventListener('change', uploadAvatar);
@@ -398,7 +394,7 @@ export function getProfilePictureURL(userID) {
     http.send();
 
 	if (http.status == 404) {
-		return "../img/avatar.png";
+		return "https://harmoneeapp.github.io/img/avatar.png";
 	} else {
 		return "https://ivneclagzgocuvufxubf.supabase.co/storage/v1/object/public/avatars/" + userID + ".png";
 	}
@@ -406,6 +402,7 @@ export function getProfilePictureURL(userID) {
 
 /* Shortcuts to DOM Elements */
 var recentPosts = document.getElementById("recent-posts");
+var profilePosts = document.getElementById("profile-posts");
 var userPosts = document.getElementById("user-posts");
 var listeningFirebaseRefs = [];
 
@@ -416,7 +413,8 @@ function createNewPost(userID, postContent, postDate) {
 		userID: userID,
 		postContent: postContent,
 		postDate: postDate,
-		likeCount: 0
+		likeCount: 0,
+		commentCount: 0
 	};
 
 	// Create new key
@@ -429,12 +427,37 @@ function createNewPost(userID, postContent, postDate) {
 	return firebase.database().ref().update(updates);
 }
 
-/* Create Post Elements */
-function createPostElement(postID, userID) {
+function createNewComment(postID, userID, commentContent, commentDate) {
+	// Comment Count
+	firebase.database().ref('posts/' + postID).transaction((post) => {
+		post.commentCount++;
+		return post;
+	});
+
+	// Comment Entry
+	var commentData = {
+		userID: userID,
+		commentContent: commentContent,
+		commentDate: commentDate,
+		likeCount: 0
+	};
+
+	// Create new key
+	var newCommentKey = firebase.database().ref().child("posts").child(postID).child("comments").push().key;
+
+	// Write comment data
+	var updates = {};
+	updates["/posts/" + postID + "/comments/" + newCommentKey] = commentData;
+
+	return firebase.database().ref().update(updates);
+}
+
+/* Create Post Element */
+function createPostElement(postID) {
 	var html = 
-	'<div class="post post-' + postID + '">' +
+	'<div class="post post-' + postID + '" id="post-' + postID + '">' +
 		'<div class="post-header">' +
-			'<img class="post-avatar" src="' + getProfilePictureURL(userID) + '">' +
+			'<img class="post-avatar">' +
 			'<div class="post-info">' +
 				'<span class="post-displayname"></span>' +
 				'<span class="post-username"></span>' +
@@ -444,7 +467,7 @@ function createPostElement(postID, userID) {
 		'<div class="post-footer">' +
 		'<div class="post-actions">' +
 			'<div class="post-like"><ion-icon name="heart-outline"></ion-icon><span class="like-count"></span></div>' +
-			'<div class="post-comment"><ion-icon name="chatbox-outline"></ion-icon><span class="comment-count"></span></div>' +
+			'<div class="post-comment"><ion-icon name="chatbubble-outline"></ion-icon><span class="comment-count"></span></div>' +
 			'<div class="post-delete"><ion-icon name="trash-outline"></ion-icon></div>' +
 		'</div>' +
 			'<span class="post-date"></span>' +
@@ -457,6 +480,35 @@ function createPostElement(postID, userID) {
 	var postElement = div.firstChild;
 
 	return postElement;
+}
+
+/* Create Comment Element */
+function createCommentElement(commentID) {
+	var html = 
+	'<div class="comment comment-' + commentID + '" id="comment-' + commentID + '">' +
+		'<div class="comment-header">' +
+			'<img class="comment-avatar">' +
+			'<div class="comment-info">' +
+				'<span class="comment-displayname"></span>' +
+				'<span class="comment-username"></span>' +
+			'</div>' +
+		'</div>' +
+		'<p class="comment-content"></p>' +
+		'<div class="comment-footer">' +
+		'<div class="comment-actions">' +
+			'<div class="comment-like"><ion-icon name="heart-outline"></ion-icon><span class="like-count"></span></div>' +
+			'<div class="comment-delete"><ion-icon name="trash-outline"></ion-icon></div>' +
+		'</div>' +
+			'<span class="comment-date"></span>' +
+		'</div>' +
+	'</div>';
+
+	// Create the DOM element from the HTML
+	var div = document.createElement("div");
+	div.innerHTML = html;
+	var commentElement = div.firstChild;
+
+	return commentElement;
 }
 
 /* Like Functionality */
@@ -490,6 +542,8 @@ function getProfilePosts(userID) {
 				posts.unshift(postData);
 			}
 		});
+
+		console.log(posts);
 		
 		return posts;
 	}).catch(error => {
@@ -528,8 +582,12 @@ export function startDatabaseQueries() {
 	var fetchPosts = function(postsRef, sectionElement) {
 		postsRef.on("child_added", function(data) {
 			var containerElement = sectionElement.getElementsByClassName('posts-container')[0];
-			var postElement = createPostElement(data.key, data.val().userID);
+			var postElement = createPostElement(data.key);
 			containerElement.insertBefore(postElement, containerElement.firstChild);
+
+			var url = getProfilePictureURL(data.val().userID);
+
+			postElement.getElementsByClassName("post-avatar")[0].setAttribute('src', url);
 
 			firebase.database().ref("/users/" + data.val().userID).once("value").then((snapshot) => {
 				var displayName = (snapshot.val() && snapshot.val().displayName) || "Display Name";
@@ -537,6 +595,16 @@ export function startDatabaseQueries() {
 
 				postElement.getElementsByClassName("post-displayname")[0].textContent = displayName;
 				postElement.getElementsByClassName("post-username")[0].textContent = "@" + username;
+			});
+
+			postElement.getElementsByClassName("post-avatar")[0].style.cursor = "pointer";
+
+			postElement.getElementsByClassName("post-avatar")[0].addEventListener('click', () => {
+				if (data.val().userID == currentUserID) {
+					showView("profile");
+				} else {
+					viewProfile(data.val().userID);
+				}
 			});
 
 			postElement.getElementsByClassName("post-content")[0].textContent = data.val().postContent;
@@ -547,6 +615,7 @@ export function startDatabaseQueries() {
 			}
 
 			postElement.getElementsByClassName("like-count")[0].textContent = data.val().likeCount || 0;
+			postElement.getElementsByClassName("comment-count")[0].textContent = data.val().commentCount || 0;
 
 			if (data.val().likes && data.val().likes[currentUserID]) {
 				postElement.getElementsByClassName("post-like")[0].querySelector("ion-icon").setAttribute("name", "heart");
@@ -558,8 +627,12 @@ export function startDatabaseQueries() {
 				toggleLike(currentUserID, data.key);
 			});
 
+			postElement.getElementsByClassName("post-comment")[0].addEventListener('click', () => {
+				viewPost(data);
+			});
+
 			postElement.getElementsByClassName("post-delete")[0].addEventListener('click', () => {
-				deletePost(currentUserID, data.key);
+				deletePost(data.key);
 			});
 		});
 		postsRef.on('child_changed', function(data) {
@@ -568,6 +641,7 @@ export function startDatabaseQueries() {
 			postElement.getElementsByClassName('post-content')[0].innerText = data.val().postContent;
 			postElement.getElementsByClassName("post-date")[0].textContent = timeSincePost(data.val().postDate);
 			postElement.getElementsByClassName("like-count")[0].textContent = data.val().likeCount || 0;
+			postElement.getElementsByClassName("comment-count")[0].textContent = data.val().commentCount || 0;
 
 			if (data.val().likes && data.val().likes[currentUserID]) {
 				postElement.getElementsByClassName("post-like")[0].querySelector("ion-icon").setAttribute("name", "heart");
@@ -586,8 +660,12 @@ export function startDatabaseQueries() {
 		postsRef.on("child_added", function(data) {
 			if (data.val().userID == currentUserID) {
 				var containerElement = sectionElement.getElementsByClassName('posts-container')[0];
-				var postElement = createPostElement(data.key, data.val().userID);
+				var postElement = createPostElement(data.key);
 				containerElement.insertBefore(postElement, containerElement.firstChild);
+
+				var url = getProfilePictureURL(data.val().userID);
+
+				postElement.getElementsByClassName("post-avatar")[0].setAttribute('src', url);
 
 				firebase.database().ref("/users/" + data.val().userID).once("value").then((snapshot) => {
 					var displayName = (snapshot.val() && snapshot.val().displayName) || "Display Name";
@@ -616,8 +694,12 @@ export function startDatabaseQueries() {
 					toggleLike(currentUserID, data.key);
 				});
 
+				postElement.getElementsByClassName("post-comment")[0].addEventListener('click', () => {
+					viewPost(data);
+				});
+
 				postElement.getElementsByClassName("post-delete")[0].addEventListener('click', () => {
-					deletePost(currentUserID, data.key);
+					deletePost(data.key);
 				});
 				
 			}
@@ -650,7 +732,7 @@ export function startDatabaseQueries() {
 	fetchPosts(postsRef.limitToLast(100), recentPosts);
 
 	// Fetch Profile Posts
-	fetchProfile(postsRef, userPosts);
+	fetchProfile(postsRef, profilePosts);
 
 	// Keep track of listeners
 	listeningFirebaseRefs.push(postsRef);
@@ -685,8 +767,34 @@ if (document.getElementById('createPost')) {
 	document.getElementById('createPost').addEventListener('click', createPost);
 }
 
+/* Create Comment */
+function createComment(postID) {
+	var commentContent = document.getElementById("newcomment-content").value;
+	
+	if (commentContent == "" || !commentContent.replace(/\s/g, '').length) {
+		Swal.fire({
+			title: "Comment cannot be empty!",
+			icon: "error",
+			confirmButtonText: "Okay"
+		});
+	} else {
+		// Get Timestamp
+		var date = new Date();
+		var dateString = date.toISOString();
+
+		// Clear Text Field
+		document.getElementById("newcomment-content").value = "";
+
+		// Create Comment
+		var currentUserID = firebase.auth().currentUser.uid;
+		
+		return createNewComment(postID, currentUserID, commentContent, dateString);
+	}
+}
+
+
 /* Delete Post */
-function deletePost(userID, postID) {
+function deletePost(postID) {
 	Swal.fire({
 		title: "Are You Sure?",
 		text: "Are you sure you want to delete this post?\nThis action cannot be undone!",
@@ -700,6 +808,29 @@ function deletePost(userID, postID) {
 			firebase.database().ref().child("posts").child(postID).remove();
 		}
 	});
+}
+
+/* Delete Comment */
+function deleteComment(postID, commentID) {
+	Swal.fire({
+		title: "Are You Sure?",
+		text: "Are you sure you want to delete this comment?\nThis action cannot be undone!",
+		icon: "warning",
+		showCancelButton: true,
+		cancelButtonColor: "#e0e0e0",
+		confirmButtonColor: "#ff512f",
+		confirmButtonText: "Yes, delete it!"
+	}).then((result) => {
+		if (result.isConfirmed) {
+			firebase.database().ref('posts/' + postID).transaction((post) => {
+				post.commentCount--;
+				return post;
+			});
+
+			firebase.database().ref().child("posts/" + postID + "/comments").child(commentID).remove();
+		}
+	});
+	
 }
 
 /* Toggle Dropdown Visibility */
@@ -734,7 +865,7 @@ function showProfile() {
 	messagesView.classList.toggle("moved-down");
 	profileView.classList.toggle("moved-down");
 
-	showView(event, 'profile')
+	showView('profile');
 }
 if (document.getElementById('showProfile')) {
 	document.getElementById('showProfile').addEventListener('click', showProfile);
@@ -760,23 +891,236 @@ if (document.getElementById('closeModal')) {
 	document.getElementById('closeModal').addEventListener('click', closeModal);
 }
 
+/* View Post */
+function viewPost(post) {
+	var modal = document.getElementById("view-post");
+	modal.style.display = "block";
+
+	modal.addEventListener('click', function(e) {
+		if (e.target == this) {
+			modal.style.display = "none";
+
+			document.getElementById("createComment").removeEventListener('click', () => {
+				createComment(post.key);
+			});
+		}
+	});
+
+	var avatarView = document.getElementsByClassName("postmodal-avatar")[0];
+	var displayNameLabel = document.getElementsByClassName("postmodal-displayname")[0];
+	var usernameLabel = document.getElementsByClassName("postmodal-username")[0];
+	var contentLabel = document.getElementsByClassName("postmodal-content")[0];
+	var dateLabel = document.getElementsByClassName("postmodal-date")[0];
+
+	var url = getProfilePictureURL(post.val().userID);
+
+	avatarView.setAttribute('src', url);
+
+	firebase.database().ref("/users/" + post.val().userID).once("value").then((snapshot) => {
+		var displayName = (snapshot.val() && snapshot.val().displayName) || "Display Name";
+		var username = (snapshot.val() && snapshot.val().username) || "Username";
+
+		displayNameLabel.textContent = displayName;
+		usernameLabel.textContent = "@" + username;
+	});
+
+	contentLabel.innerText = post.val().postContent;
+	dateLabel.textContent = timeSincePost(post.val().postDate);
+
+	var postView = document.getElementsByClassName("postmodal-post")[0];
+	var commentView = document.getElementsByClassName("comment-container")[0];
+
+	var postHeight = postView.offsetHeight + 10;
+
+	commentView.style.top = `${postHeight}px`;
+
+	document.getElementById("createComment").addEventListener('click', () => {
+		createComment(post.key);
+	});
+
+	listenForComments(post.key);
+}
+
+/* Listen for Comments */
+function listenForComments(postID) {
+	var currentUserID = firebase.auth().currentUser.uid;
+
+	var commentsRef = firebase.database().ref('posts/' + postID + '/comments');
+	var containerElement = document.getElementsByClassName('comment-container')[0];
+
+	containerElement.innerHTML = "";
+	
+	commentsRef.on("child_added", function(data) {
+		if (!document.getElementById("comment-" + data.key)) {
+			var commentElement = createCommentElement(data.key);
+			containerElement.insertBefore(commentElement, containerElement.firstChild);
+
+			var url = getProfilePictureURL(data.val().userID);
+
+			commentElement.getElementsByClassName("comment-avatar")[0].setAttribute('src', url);
+			
+			firebase.database().ref("/users/" + data.val().userID).once("value").then((snapshot) => {
+				var displayName = (snapshot.val() && snapshot.val().displayName) || "Display Name";
+				var username = (snapshot.val() && snapshot.val().username) || "Username";
+
+				commentElement.getElementsByClassName("comment-displayname")[0].textContent = displayName;
+				commentElement.getElementsByClassName("comment-username")[0].textContent = "@" + username;
+			});
+
+			commentElement.getElementsByClassName("comment-avatar")[0].style.cursor = "pointer";
+
+			commentElement.getElementsByClassName("comment-avatar")[0].addEventListener('click', () => {
+				if (data.val().userID == currentUserID) {
+					showView("profile");
+				} else {
+					viewProfile(data.val().userID);
+				}
+			});
+
+			commentElement.getElementsByClassName("comment-content")[0].textContent = data.val().commentContent;
+			commentElement.getElementsByClassName("comment-date")[0].textContent = timeSincePost(data.val().commentDate);
+
+			if (currentUserID != data.val().userID) {
+				commentElement.getElementsByClassName("comment-delete")[0].hidden = true;
+			}
+
+			commentElement.getElementsByClassName("like-count")[0].textContent = data.val().likeCount || 0;
+
+			if (data.val().likes && data.val().likes[currentUserID]) {
+				commentElement.getElementsByClassName("comment-like")[0].querySelector("ion-icon").setAttribute("name", "heart");
+			} else {
+				commentElement.getElementsByClassName("comment-like")[0].querySelector("ion-icon").setAttribute("name", "heart-outline");
+			}
+
+			commentElement.getElementsByClassName("comment-like")[0].addEventListener('click', () => {
+				toggleLike(currentUserID, data.key);
+			});
+
+
+			commentElement.getElementsByClassName("comment-delete")[0].addEventListener('click', () => {
+				deleteComment(postID, data.key);
+			});
+		}
+	});
+	commentsRef.on('child_changed', function(data) {
+		var commentElement = containerElement.getElementsByClassName('comment-' + data.key)[0];
+		commentElement.getElementsByClassName('comment-content')[0].innerText = data.val().commentContent;
+		commentElement.getElementsByClassName("comment-date")[0].textContent = timeSincePost(data.val().commentDate);
+		commentElement.getElementsByClassName("like-count")[0].textContent = data.val().likeCount || 0;
+
+		if (data.val().likes && data.val().likes[currentUserID]) {
+			commentElement.getElementsByClassName("comment-like")[0].querySelector("ion-icon").setAttribute("name", "heart");
+		} else {
+			commentElement.getElementsByClassName("comment-like")[0].querySelector("ion-icon").setAttribute("name", "heart-outline");
+		}
+	});
+	commentsRef.on('child_removed', function(data) {
+		var comment = containerElement.getElementsByClassName('comment-' + data.key)[0];
+		comment.parentElement.removeChild(comment);
+	});
+
+	// Keep track of listeners
+	listeningFirebaseRefs.push(commentsRef);
+}
+
+/* View Profile */
+function viewProfile(userID) {
+	var modal = document.getElementById("view-profile");
+	modal.style.display = "block";
+
+	modal.addEventListener('click', function(e) {
+		if (e.target == this) {
+			modal.style.display = "none";
+		}
+	});
+
+	var avatarView = document.getElementsByClassName("profilemodal-image")[0];
+	var profileDisplayName = document.getElementsByClassName("profilemodal-displayname")[0];
+	var profileUsername = document.getElementsByClassName("profilemodal-username")[0];
+		
+	var url = getProfilePictureURL(userID);
+
+	avatarView.setAttribute('src', url);
+
+	firebase.database().ref("/users/" + userID).once("value").then((snapshot) => {
+		var displayName = (snapshot.val() && snapshot.val().displayName) || "Display Name";
+		var username = (snapshot.val() && snapshot.val().username) || "Username";
+		var verified = (snapshot.val() && snapshot.val().verified) || false;
+
+		profileDisplayName.textContent = displayName;
+		profileUsername.textContent = "@" + username;
+	});
+
+	document.getElementsByClassName('modal-close')[1].addEventListener('click', () => {
+		modal.style.display = "none";
+	});
+}
+
 /* Update Profile */
 function updateProfileInfo() {
-	var modal = document.getElementById("edit-profile");
+	var currentUserID = firebase.auth().currentUser.uid;
+	var displayName = document.getElementById("edit-displayname").value;
+	var username = document.getElementById("edit-username").value;
 
-	modal.style.display = "none";
-
-	/*
-	var displayNameField = document.getElementById("edit-displayname");
-	var usernameField = document.getElementById("edit-username");
-	var websiteField = document.getElementById("edit-website");
-
-	if (displayNameField.value == "" || usernameField.value == "") {
-		// Fill in all fields!
+	if (displayName == "" || !displayName.replace(/\s/g, '').length) {
+		Swal.fire({
+			title: "Display Name cannot be blank!",
+			icon: "error",
+			confirmButtonText: "Okay"
+		});
+	} else if (username == "" || !username.replace(/\s/g, '').length) {
+		Swal.fire({
+			title: "Username cannot be blank!",
+			icon: "error",
+			confirmButtonText: "Okay"
+		});
 	} else {
-		//
+		var allowedChars = /^[a-zA-Z0-9_]+$/;
+
+		var errorMessage = null;
+
+		if (username == "") {
+			errorMessage = "Please fill in all fields.";
+		} else if (username.length < 5 || username.length > 15) {
+			errorMessage = "Username must be between 5 and 15 characters in length.";
+		} else if (!allowedChars.test(username)) {
+			errorMessage = "Username contains invalid characters. Only letters, numbers, and underscores are allowed.";
+		} else if (username.startsWith('_')) {
+			errorMessage = "Username cannot start with an underscore.";
+		}
+
+		if (errorMessage) {
+			Swal.fire({
+				title: errorMessage,
+				icon: "error",
+				confirmButtonText: "Okay"
+			});
+		} else {
+			var databaseRef = firebase.database().ref("usernames");
+
+			databaseRef.once("value").then(function(snapshot) {
+				if (snapshot.child(username).exists()) {
+					if (snapshot.child(username).val() != currentUserID) {
+						Swal.fire({
+							title: "Username is not available.",
+							icon: "error",
+							confirmButtonText: "Okay"
+						});
+					} else {
+						updateUserData(currentUserID, displayName, username);
+
+						var modal = document.getElementById("edit-profile");
+						modal.style.display = "none";
+					}
+				} else {
+					updateUserData(currentUserID, displayName, username);
+
+					var modal = document.getElementById("edit-profile");
+					modal.style.display = "none";
+				}
+			});
+		}
 	}
-	*/
 }
 if (document.getElementById('updateProfileInfo')) {
 	document.getElementById('updateProfileInfo').addEventListener('click', updateProfileInfo);
