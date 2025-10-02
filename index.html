@@ -40,18 +40,18 @@
 			<button class="tab-link" onclick="showTab(event, 'feed')" id="default">Feed</button>
 			<button class="tab-link" onclick="showTab(event, 'search')">Search</button>
 			<button class="tab-link" onclick="showTab(event, 'messages')">Messages</button>
-			<button class="profile-button" id="showProfileMenu"><img id="avatar-icon" class="avatar-icon"></button>
+			<button class="profile-button" onclick="showProfileMenu()"><img id="avatar-icon" class="avatar-icon"></button>
 		</div>
 		<div class="profile-menu" id="profileMenu">
-			<button class="menu-item" id="showProfile">Profile</button>
-			<button class="menu-item" id="signOutUser">Sign Out</button>
+			<button class="menu-item" onclick="showProfile()">Profile</button>
+			<button class="menu-item" onclick="signOutUser()">Sign Out</button>
 		</div>
 		<!-- Feed -->
 		<div id="feed" class="tab-content">
 			<!-- New Post -->
 			<div class="newpost-view">
 				<textarea id="newpost-content" class="post-textarea" spellcheck="false" maxlength="420" placeholder="What's happening?" onkeyup="autogrow(this)"></textarea>
-				<button class="newpost-button" id="createPost">Post</button>
+				<button class="newpost-button" onclick="createPost()">Post</button>
 				<div id="count">
 					<span id="current_count">0</span>
 					<span id="maximum_count">/ 420</span>
@@ -83,7 +83,7 @@
 					<span class="profile-name">Name</span>
 					<br>
 					<span class="profile-username">Username</span>
-					<div class="edit-button" id="editProfile">Edit Profile</div>
+					<div class="edit-button" onclick="editProfile()">Edit Profile</div>
 				</div>
 			</div>
 			<div id="edit-profile" class="modal">
@@ -95,7 +95,7 @@
 						<center>
 							<div class="update-avatar">
 								<input type="file" accept="image/jpeg, image/png" id="edit-avatar">
-								<label for="edit-avatar" id="avatar-button">Upload</label>
+								<label for="edit-avatar" onclick="uploadAvatar()">Upload</label>
 							</div>
 						</center>
 						<label for="edit-displayname" class="modal-label">Display Name</label>
@@ -104,8 +104,8 @@
 						<input type="text" class="modal-input" spellcheck="false" id="edit-username">
 					</div>
 					<div class="modal-footer">
-						<div class="footer-button" id="closeModal">Cancel</div>
-						<div class="footer-button" id="updateProfileInfo">Save Changes</div>
+						<div class="footer-button" onclick="closeModal()">Cancel</div>
+						<div class="footer-button" onclick="updateProfileInfo()">Save Changes</div>
 					</div>
 				</div>
 			</div>
@@ -114,7 +114,7 @@
 				<div class="posts-container"></div>
 			</div>
 		</div>
-		<!-- Global Modals -->
+		<!-- View Post Modal -->
 		<div id="view-post" class="global-modal">
 			<div class="postmodal-container">
 				<div class="postmodal-post">
@@ -135,14 +135,21 @@
 			<textarea id="newcomment-content" class="newcomment-textarea" spellcheck="false" maxlength="420" placeholder="What's happening?" onkeyup="autogrow(this)"></textarea>
 			<button class="newcomment-button" id="createComment">Post</button>
 		</div>
+		<!-- View Profile Modal -->
 		<div id="view-profile" class="global-modal">
 			<div class="profilemodal-container">
 				<div class="profilemodal-header">
 					<img class="profilemodal-image">
 					<div class="profilemodal-info">
-						<span class="profilemodal-displayname">Display Name</span>
-						<span class="profilemodal-username">Username</span>
+						<span class="profilemodal-displayname"></span>
+						<span class="profilemodal-username"></span>
+						<div class="profilemodal-more">
+							<span class="profilemodal-following">Following</span>
+							<span class="profilemodal-followers">Followers</span>
+						</div>
 					</div>
+					<div class="profilemodal-button"></div>
+					
 				</div>
 			</div>
 		</div>
@@ -151,13 +158,15 @@
 		<script src="https://unpkg.com/sweetalert2/dist/sweetalert2.all.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 		<!-- Local Scripts -->
-		<script type="module" src="js/app.js"></script>
-		<script src="js/main.js"></script>
+		<script type="module" src="js/supabase.js"></script>
+		<script src="js/auth.js"></script>
+		<script src="js/db.js"></script>
+		<script src="js/listeners.js"></script>
+		<script src="js/ui.js"></script>
+		<script src="js/users.js"></script>
+		<script src="js/util.js"></script>
 		<!-- Custom Scripts -->
-		<script type="module">
-			import { startDatabaseQueries } from './js/app.js';
-			import { getProfilePictureURL } from './js/app.js';
-			
+		<script>
 			var didSignIn = false;
 
 			firebase.auth().onAuthStateChanged(function(user) {
@@ -168,12 +177,17 @@
 					loadProfilePicture(user.uid);
 					loadProfileInfo(user.uid);
 
-					startDatabaseQueries();
+					listenForPosts();
+					listenForChanges();
 				} else {
 					if (didSignIn) {
 						Swal.fire({
 							title: "You were successfully signed out.",
 							icon: "success",
+							iconColor: "#10b981",
+							background: "#3c4469",
+							color: "#e4e4e4",
+							confirmButtonColor: "#6c759b",
 							confirmButtonText: "Okay"
 						}).then((value) => {
 							setTimeout(function() {
@@ -185,44 +199,12 @@
 					}
 				}
 			});
-
-			function loadProfilePicture(userID) {
-				var avatarView = document.getElementById("avatar-icon");
-				var profileImage = document.getElementsByClassName("profile-image")[0];
-				var updateAvatarView = document.getElementsByClassName("update-avatar")[0];
-				
-				var url = getProfilePictureURL(userID);
-
-				avatarView.setAttribute('src', url);
-				profileImage.setAttribute('src', url);
-				updateAvatarView.style.backgroundImage = "url(" + url + ")";
-			}
-
-			function loadProfileInfo(userID) {
-				var profileNameLabel = document.getElementsByClassName("profile-name")[0];
-				var profileUsernameLabel = document.getElementsByClassName("profile-username")[0];
-
-				var editProfileNameLabel = document.getElementById("edit-displayname");
-				var editProfileUsernameLabel = document.getElementById("edit-username");
-
-				return firebase.database().ref("/users/" + userID).once("value").then((snapshot) => {
-					var displayName = (snapshot.val() && snapshot.val().displayName) || "Display Name";
-					var username = (snapshot.val() && snapshot.val().username) || "Username";
-					var verified = (snapshot.val() && snapshot.val().verified) || false;
-
-					profileNameLabel.textContent = displayName;
-					profileUsernameLabel.textContent = "@" + username;
-				
-					editProfileNameLabel.value = displayName;
-					editProfileUsernameLabel.value = username;
-				});
-			}
-
+			
 			// Post Character Count
 			$("#newpost-content").keyup(function() {
 				var characterCount = $(this).val().length,
 				current_count = $("#current_count"),
-				maximum_count = $("maximum_count"),
+				maximum_count = $("#maximum_count"),
 				count = $("#count");
 
 				current_count.text(characterCount);
@@ -232,7 +214,7 @@
 			$("#newcomment-content").keyup(function() {
 				var characterCount = $(this).val().length,
 				current_count = $("#current_count"),
-				maximum_count = $("maximum_count"),
+				maximum_count = $("#maximum_count"),
 				count = $("#count");
 
 				current_count.text(characterCount);

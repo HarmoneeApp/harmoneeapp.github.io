@@ -32,6 +32,7 @@
 			firebase.initializeApp(firebaseConfig);
 			firebase.analytics();
 			// Check if already signed in
+			
 			setTimeout(function() {
 				firebase.auth().onAuthStateChanged(function(user) {
 					if (user) {
@@ -39,6 +40,10 @@
 						Swal.fire({
 							title: "You were are already signed in.",
 							icon: "success",
+							iconColor: "#10b981",
+							background: "#3c4469",
+							color: "#e4e4e4",
+							confirmButtonColor: "#6c759b",
 							confirmButtonText: "Okay"
 						}).then((value) => {
 							setTimeout(function() {
@@ -55,13 +60,43 @@
 			<br><br>
 			<span class="title">Welcome to Harmonee</span>
 			<br><br><br>
-			<a class="button" href="signup.html">Sign Up</a>
-			<a class="button" href="signin.html">Sign In</a>
+			<div class="button" id="signup-button" onclick="signUpPressed()">Sign Up</div>
+			<div class="button" id="signin-button" onclick="signInPressed()">Sign In</div>
+		</div>
+		<!-- Modals -->
+		<div id="signup-modal" class="global-modal">
+			<div class="welcome-container">
+				<h1>Sign Up</h1>
+				<textarea id="signup-displayname" placeholder="Display Name"></textarea>
+				<textarea id="signup-username" placeholder="Username"></textarea>
+				<textarea id="signup-email" placeholder="Email"></textarea>
+				<textarea id="signup-password" placeholder="Password"></textarea>
+				<textarea id="signup-confirm" placeholder="Confirm Password"></textarea>
+				<div class="button" id="signup-user">Create Account</div>
+			</div>
+		</div>
+		<div id="signin-modal" class="global-modal">
+			<div class="welcome-container">
+				<h1>Sign In</h1>
+				<textarea id="signin-email" placeholder="Email"></textarea>
+				<textarea id="signin-password" placeholder="Password"></textarea>
+				<div class="signin-checkbox">
+					<input type="checkbox" id="signin-remember" class="checkbox-input">
+					<label for="signin-remember" class="checkbox"></label>
+					<span class="checkbox-label">Remember Me</span>
+				</div>
+				<div class="button" id="signin-user">Sign In</div>
+			</div>
 		</div>
 		<!-- Other Scripts -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script src="https://unpkg.com/sweetalert2/dist/sweetalert2.all.min.js"></script>
-		<script type="module" src="js/app.js"></script>
+		<!-- Local Scripts -->
+		<script type="module" src="js/supabase.js"></script>
+		<script src="js/auth.js"></script>
+		<script src="js/db.js"></script>
+		<script src="js/ui.js"></script>
+		<script src="js/util.js"></script>
 	</body>
 </html>

@@ -1,8 +1,21 @@
 :root {
-	--primary-color: #ff512f;
-	--secondary-color: #dd2476;
-	--accent-color: #ff716c;
-	--text-color: white;
+	--background-color: #232946;
+	--primary-color: #3c4469;
+	--accent-color: #5a628a;
+	--highlight-color: #6c759b;
+
+	--secondary-one: #8e87ff;
+	--secondary-two: #6c63ff;
+    --secondary-three: #4b45cc;
+
+	--text-light: #e4e4e4;
+    --text-muted: #b4b4b4;
+
+	--tint-green: #10b981;
+    --tint-yellow: #fbbf24;
+    --tint-red: #ef4444;
+    --tint-blue: #60a5fa;
+
 	--font-main: 'Nunito', sans-serif;
 }
 
@@ -18,10 +31,8 @@
 
 html {
 	font-weight: 600;
-	background: linear-gradient(var(--primary-color), var(--secondary-color));
-	background-repeat: no-repeat;
-	background-size: cover;
-	color: var(--text-color);
+	background-color: var(--background-color);
+	color: var(--text-light);
 }
 
 body {
@@ -29,7 +40,7 @@ body {
 }
 
 ion-icon {
-	color: var(--primary-color);
+	color: var(--text-light);
 	font-size: 20px;
 }
 
@@ -48,35 +59,160 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	height: 160px;
 	width: 160px;
 	border-radius: 20%;
-	border: 5px solid var(--text-color);
+	border: 5px solid var(--accent-color);
+}
+
+#signin-modal {
+	display: none;
+}
+
+#signup-modal {
+	display: none;
+}
+
+#setup-modal {
+	display: none;
+}
+
+.welcome-container {
+	background-color: var(--primary-color);
+	border-radius: 20px;
+	width: 340px;
+	height: auto;
+	margin-top: 150px;
+	margin-left: calc((100% - 340px) / 2);
+	margin-right: calc((100% - 340px) / 2);
+}
+
+.welcome-container h1 {
+	text-align: center;
+	padding: 10px 0;
+	margin: 0;
+}
+
+.welcome-container textarea {
+	border-radius: 15px;
+	margin: 10px 20px 0 20px;
+	width: calc(100% - 40px);
+	border: none;
+	outline: none;
+	background-color: var(--accent-color);
+	font: inherit;
+	font-size: 18px;
+	color: var(--text-light);
+	height: 40px;
+	resize: none;
+	overflow: hidden;
+	line-height: 40px;
+	font-weight: 700;
+	padding: 0 10px;
+}
+
+#signin-modal .welcome-container {
+	margin-top: 200px;
+	margin-left: calc((100% - 340px) / 2);
+	margin-right: calc((100% - 340px) / 2);
+}
+
+#signup-username, #signup-confirm {
+	margin-bottom: 30px;
+}
+
+#signin-password {
+	margin-bottom: 10px;
+}
+
+input[type="checkbox"] {
+	appearance: none;
+	opacity: 0;
+	position: absolute;
+	width: 0;
+	height: 0;
+}
+
+.checkbox {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	background-color: var(--accent-color);
+	border-radius: 4px;
+	cursor: pointer;
+	position: relative;
+	vertical-align: middle;
+	margin-right: 10px;
+}
+
+.checkbox-input:checked + .checkbox::after {
+	content: '';
+	position: absolute;
+	top: 2.5px;
+	left: 7px;
+	width: 5px;
+	height: 10px;
+	border: solid var(--text-light);
+	border-width: 0 2px 2px 0;
+	transform: rotate(45deg);
+}
+
+.signin-checkbox {
+	display: flex;
+	align-items: center;
+	margin: 0 0 0 25px;
+}
+
+.welcome-container textarea::placeholder {
+	color: var(--text-muted);
+}
+
+.welcome-container textarea:focus {
+	outline: none;
+}
+
+.welcome-container .button {
+	border-radius: 15px;
+	margin: 0 20px 15px 20px;
+	width: calc(100% - 80px);
+	font: inherit;
+	font-size: 18px;
+	height: 20px;
+	resize: none;
+	overflow: hidden;
+	line-height: 20px;
+	font-weight: 700;
+	text-align: center;
+	background-color: var(--accent-color);
+}
+
+#signin-user {
+	margin: 30px 20px 15px 20px;
 }
 
 .avatar-icon {
 	height: 35px;
 	width: 35px;
 	border-radius: 50%;
-	border: 3px solid black;
+	border: 3px solid var(--accent-color);
 }
 
 .title {
 	font-size: 50px;
-	font-weight: 800;
+	font-weight: 700;
 }
 
 .button {
 	text-decoration: none;
 	font-size: 28.5px;
-	font-weight: 800;
+	font-weight: 700;
 	display: inline-block;
 	border-radius: 20px;
 	text-align: center;
 	padding: 15px 20px;
-	background-color: var(--text-color);
-	color: var(--primary-color);
+	background-color: var(--primary-color);
+	color: var(--text-light);
 }
 
 .button:hover {
-	background-color: rgb(200, 200, 200) !important;
+	background-color: var(--highlight-color);
 }
 
 .button:nth-of-type(1) {
@@ -88,16 +224,17 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 }
 
 .tab {
-	background-color: var(--text-color);
+	background-color: var(--primary-color);
 	border-radius: 15px;
 	margin: 15px 10px 0 10px;
 	overflow: hidden;
 	height: 50px;
+	border: 2px solid var(--accent-color);
 }
 
 .tab button {
 	background-color: inherit;
-	color: var(--primary-color);
+	color: var(--text-light);
 	float: left;
 	height: 50px;
 	text-align: center;
@@ -106,16 +243,17 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	transition: 0.3s;
 	font-size: 18px;
 	line-height: 50px;
-	font-weight: 800;
+	font-weight: 700;
 }
 
 .tab button:hover {
-	background-color: #f0f0f0;
+	background-color: var(--accent-color);
+	transition: 0.15s ease-in;
 }
 
 .tab button.active {
-	background-color: #e0e0e0;
-	transition: color 0.15s ease-in;
+	background-color: var(--accent-color);
+	transition: 0.15s ease-in;
 }
 
 .tab button.profile-button {
@@ -129,11 +267,12 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 .profile-menu {
 	display: none;
 	width: fit-content;
-	background-color: var(--text-color);
+	background-color: var(--primary-color);
 	border-radius: 15px;
 	z-index: 1;
 	float: right;
 	margin: 10px 10px 0 0;
+	border: 2px solid var(--accent-color);
 }
 
 .show {
@@ -143,7 +282,7 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 .menu-item {
 	display: inline-block;
 	background-color: inherit;
-	color: var(--primary-color);
+	color: var(--text-light);
 	height: 50px;
 	text-align: center;
 	margin: auto;
@@ -151,11 +290,11 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	transition: 0.3s;
 	font-size: 18px;
 	line-height: 50px;
-	font-weight: 800;
+	font-weight: 700;
 }
 
 .menu-item:hover {
-	background-color: #f0f0f0;
+	background-color: var(--accent-color);
 }
 
 .menu-item:first-of-type {
@@ -177,19 +316,20 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 
 .tab-title {
 	font-size: 35px;
-	font-weight: 800;
+	font-weight: 700;
 }
 
 .newpost-view {
-	background-color: var(--text-color);
+	background-color: var(--primary-color);
 	border-radius: 15px;
 	margin: 10px 10px 30px 10px;
 	height: 100px;
+	border: 2px solid var(--accent-color);
 }
 
 .newpost-button {
-	background-color: var(--primary-color);
-	color: var(--text-color);
+	background-color: var(--accent-color);
+	color: var(--text-light);
 	text-align: center;
 	transition: 0.3s;
 	font-size: 20px;
@@ -199,26 +339,30 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	margin: 15px 15px 0 0;
 	padding: 0 15px 0 15px;
 	border-radius: 10px;
-	font-weight: 800;
+	font-weight: 700;
 }
 
 .newpost-button:hover {
-	background-color: var(--accent-color);
+	background-color: var(--highlight-color);
 }
 
 .post-textarea {
 	margin: 17px 0 0 15px;
 	width: calc(100% - 15px - 15px - 64.81px - 15px);
 	border: none;
-	background-color: var(--text-color);
+	background-color: var(--primary-color);
 	font: inherit;
 	font-size: 20px;
-	color: var(--primary-color);
+	color: var(--text-light);
 	height: 40px;
 	resize: none;
 	overflow: hidden;
 	line-height: 30px;
 	font-weight: 700;
+}
+
+.post-textarea::placeholder {
+	color: var(--text-muted);
 }
 
 .post-textarea:focus {
@@ -229,23 +373,24 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	margin: 10px 20px 0 0;
 	font-size: 18px;
 	float: right;
-	color: var(--primary-color);
+	color: var(--text-muted);
 	font-weight: 700;
 }
 
 .profile-header {
-	background-color: var(--text-color);
+	background-color: var(--primary-color);
 	border-radius: 20px;
 	margin: 10px 10px 30px 10px;
 	height: 120px;
+	border: 2px solid var(--accent-color);
 }
 
-.profile-image { 
+.profile-image {
 	display: inline-block;
 	vertical-align: middle;
 	width: 80px;
 	height: 80px;
-	border: 5px solid var(--primary-color);
+	border: 2px solid var(--accent-color);
 	margin: 15px 0 0 15px;
 	border-radius: 20px;
 }
@@ -261,14 +406,14 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 .profile-name {
 	font-size: 20px;
 	font-weight: 700;
-	color: var(--primary-color);
+	color: var(--text-light);
 	line-height: 20px;
 }
 
 .profile-username {
 	font-size: 20px;
 	font-weight: 700;
-	color: var(--primary-color);
+	color: var(--text-light);
 	line-height: 20px;
 	margin-top: -20px;
 }
@@ -277,17 +422,33 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	line-height: 10px;
 }
 
+.follower-label {
+	color: var(--text-light);
+	font-size: 14px;
+	line-height: 14px;
+}
+
+.following-label {
+	color: var(--text-light);
+	font-size: 14px;
+	line-height: 14px;
+}
+
 .edit-button {
 	position: static;
-	background-color: var(--primary-color);
-	color: var(--text-color);
+	background-color: var(--accent-color);
+	color: var(--text-light);
 	padding: 0.5rem 0.75rem;
 	border-radius: 15px;
 	cursor: pointer;
 	font-size: 18px;
-	font-weight: 700;	
+	font-weight: 700;
 	float: right;
 	margin-top: -20px;
+}
+
+.edit-button:hover {
+	background-color: var(--highlight-color);
 }
 
 .modal {
@@ -300,29 +461,31 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	width: 100%;
 	height: 100%;
 	overflow: none;
-	background-color: rgb(0, 0, 0, 0.4);
+	background-color: rgb(0, 0, 0, 0.3);
 }
 
 .modal-content {
 	position: relative;
-	background-color: #fefefe;
+	background-color: var(--primary-color);
 	margin: auto;
 	padding: 0;
 	width: 80%;
 	border-radius: 20px;
+	border: 2px solid var(--accent-color);
 }
 
 .modal-header {
 	padding: 2px 16px;
-	color: var(--primary-color);
-	border-bottom: 2px solid var(--primary-color);
+	color: var(--text-light);
+	border-bottom: 2px solid var(--accent-color);
+	text-align: center;
 }
 
 .close {
 	color: var(--primary-color);
 	float: right;
 	font-size: 28px;
-	font-weight: 800;
+	font-weight: 700;
 }
 
 .close:hover, .close:focus {
@@ -334,13 +497,12 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 .header-text {
 	font-size: 24px;
 	line-height: 10px;
-	font-weight: 800;
+	font-weight: 700;
 	margin-bottom: 20px;
 }
 
 .modal-body {
 	padding: 2px 16px;
-	color: var(--primary-color);
 }
 
 .body-text {
@@ -350,7 +512,7 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 
 .modal-label {
 	display: block;
-	color: var(--primary-color);
+	color: var(--text-light);
 	font-size: 16px;
 	font-weight: 700;
 	margin-top: 15px;
@@ -360,9 +522,9 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 
 .modal-input {
 	display: block;
-	background-color: var(--primary-color);
-	color: var(--text-color);
-	border: 2px solid var(--primary-color);
+	background-color: var(--accent-color);
+	color: var(--text-light);
+	border: 2px solid var(--accent-color);
 	border-radius: 10px;
 	width: 100%;
 	font: inherit;
@@ -380,18 +542,22 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 .modal-footer {
 	padding: 2px 16px;
 	color: var(--primary-color);
-	border-top: 2px solid var(--primary-color);
+	border-top: 2px solid var(--accent-color);
 }
 
 .footer-button {
 	display: inline-block;
-	background-color: var(--primary-color);
-	color: var(--text-color);
+	background-color: var(--accent-color);
+	color: var(--text-light);
 	font-size: 18px;
 	font-weight: 700;
 	padding: 7.5px 10px;
 	margin: 10px 0;
 	border-radius: 12.5px;
+}
+
+.footer-button:hover {
+	background-color: var(--highlight-color);
 }
 
 .footer-button:last-of-type {
@@ -400,7 +566,7 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 
 .update-avatar {
 	display: block;
-	border: 5px solid black;
+	border: 5px solid var(--accent-color);
 	background-size: 100%;
 	height: 150px;
 	width: 150px;
@@ -414,8 +580,8 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 
 #avatar-button {
 	display: inline-block;
-	background-color: var(--text-color);
-	color: var(--primary-color);
+	background-color: var(--accent-color);
+	color: var(--text-light);
 	cursor: pointer;
 	border-radius: 15px;
 	text-align: center;
@@ -426,18 +592,24 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	margin-top: calc(50% - 15px);
 }
 
+#avatar-button:hover {
+	background-color: var(--highlight-color);
+}
+
+
 .post {
-	background-color: var(--text-color);
+	background-color: var(--primary-color);
 	border-radius: 20px;
 	margin: 10px 10px 0 10px;
 	height: auto;
+	border: 2px solid var(--accent-color);
 }
 
 .post-header {
 	border-top-left-radius: 20px;
 	border-top-right-radius: 20px;
 	height: 54px;
-	border-bottom: 1px solid var(--primary-color);
+	border-bottom: 1px solid var(--accent-color);
 }
 
 .post-avatar {
@@ -445,7 +617,7 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	height: 35px;
 	width: 35px;
 	margin: 10px 0 6px 10px;
-	border: 2px solid var(--primary-color);
+	border: 2px solid var(--accent-color);
 	border-radius: 25%;
 }
 
@@ -457,8 +629,8 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 
 .post-displayname {
 	font-size: 15px;
-	font-weight: 800;
-	color: var(--primary-color);
+	font-weight: 700;
+	color: var(--text-light);
 	float: left;
 	clear: left;
 }
@@ -466,7 +638,7 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 .post-username {
 	font-size: 13px;
 	font-weight: 700;
-	color: var(--primary-color);
+	color: var(--text-light);
 	float: left;
 	clear: left;
 	margin-top: -2.5px;
@@ -476,13 +648,13 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	font-size: 15px;
 	font-weight: 700;
 	margin: 5px 10px;
-	color: var(--primary-color);
+	color: var(--text-light);
 	height: auto;
 }
 
 .post-footer {
 	height: auto;
-	border-top: 1px solid var(--primary-color);
+	border-top: 1px solid var(--accent-color);
 	border-bottom-left-radius: 20px;
 	border-bottom-right-radius: 20px;
 	text-align: right;
@@ -505,7 +677,7 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 }
 
 .like-count {
-	color: var(--primary-color);
+	color: var(--text-light);
 	margin-left: 2.5px;
 	cursor: default;
 }
@@ -519,7 +691,7 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 }
 
 .comment-count {
-	color: var(--primary-color);
+	color: var(--text-light);
 	margin-left: 2.5px;
 	cursor: default;
 }
@@ -534,7 +706,7 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	font-size: 15px;
 	font-weight: 700;
 	margin: 0 10px;
-	color: var(--primary-color);
+	color: var(--text-light);
 }
 
 #view-post {
@@ -547,7 +719,7 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 
 .global-modal {
 	position: absolute;
-	background-color: rgb(0, 0, 0, 0.5);
+	background-color: rgb(0, 0, 0, 0.3);
 	top: 0;
 	bottom: 0;
 	left: 0;
@@ -557,26 +729,25 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 
 .postmodal-container {
 	position: relative;
-	background: linear-gradient(var(--primary-color), var(--secondary-color));
-	background-repeat: no-repeat;
-	background-size: cover;
+	background-color: var(--background-color);
 	border-radius: 20px;
 	margin: 20px;
 	padding: 10px;
-	height: calc(100% - 150px);
+	height: calc(100% - 140px);
 }
 
 .postmodal-post {
-	background-color: var(--text-color);
+	background-color: var(--primary-color);
 	border-radius: 20px;
 	height: auto;
+	border: 2px solid var(--accent-color);
 }
 
 .postmodal-header {
 	border-top-left-radius: 20px;
 	border-top-right-radius: 20px;
 	height: 54px;
-	border-bottom: 1px solid var(--primary-color);
+	border-bottom: 1px solid var(--accent-color);
 }
 
 .postmodal-avatar {
@@ -584,6 +755,7 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	height: 35px;
 	width: 35px;
 	margin: 10px 0 10px 10px;
+	border: 2px solid var(--accent-color);
 	border-radius: 25%;
 }
 
@@ -595,8 +767,8 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 
 .postmodal-displayname {
 	font-size: 15px;
-	font-weight: 800;
-	color: var(--primary-color);
+	font-weight: 700;
+	color: var(--text-light);
 	float: left;
 	clear: left;
 }
@@ -604,7 +776,7 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 .postmodal-username {
 	font-size: 13px;
 	font-weight: 700;
-	color: var(--primary-color);
+	color: var(--text-light);
 	float: left;
 	clear: left;
 	margin-top: -2.5px;
@@ -614,13 +786,13 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	font-size: 15px;
 	font-weight: 700;
 	margin: 5px 10px;
-	color: var(--primary-color);
+	color: var(--text-light);
 	height: auto;
 }
 
 .postmodal-footer {
 	height: auto;
-	border-top: 1px solid var(--primary-color);
+	border-top: 1px solid var(--accent-color);
 	border-bottom-left-radius: 20px;
 	border-bottom-right-radius: 20px;
 	text-align: right;
@@ -631,7 +803,7 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	font-size: 15px;
 	font-weight: 700;
 	margin: 0 10px;
-	color: var(--primary-color);
+	color: var(--text-light);
 }
 
 .comment-container {
@@ -645,17 +817,18 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 }
 
 .comment {
-	background-color: var(--text-color);
+	background-color: var(--primary-color);
 	border-radius: 20px;
 	margin: 10px 0 0 0;
 	height: auto;
+	border: 2px solid var(--accent-color);
 }
 
 .comment-header {
 	border-top-left-radius: 20px;
 	border-top-right-radius: 20px;
 	height: 54px;
-	border-bottom: 1px solid var(--primary-color);
+	border-bottom: 1px solid var(--accent-color);
 }
 
 .comment-avatar {
@@ -663,7 +836,7 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	height: 35px;
 	width: 35px;
 	margin: 10px 0 6px 10px;
-	border: 2px solid var(--primary-color);
+	border: 2px solid var(--accent-color);
 	border-radius: 25%;
 }
 
@@ -675,8 +848,8 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 
 .comment-displayname {
 	font-size: 15px;
-	font-weight: 800;
-	color: var(--primary-color);
+	font-weight: 700;
+	color: var(--text-light);
 	float: left;
 	clear: left;
 }
@@ -684,7 +857,7 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 .comment-username {
 	font-size: 13px;
 	font-weight: 700;
-	color: var(--primary-color);
+	color: var(--text-light);
 	float: left;
 	clear: left;
 	margin-top: -2.5px;
@@ -694,13 +867,13 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	font-size: 15px;
 	font-weight: 700;
 	margin: 5px 10px;
-	color: var(--primary-color);
+	color: var(--text-light);
 	height: auto;
 }
 
 .comment-footer {
 	height: auto;
-	border-top: 1px solid var(--primary-color);
+	border-top: 1px solid var(--accent-color);
 	border-bottom-left-radius: 20px;
 	border-bottom-right-radius: 20px;
 	text-align: right;
@@ -722,8 +895,8 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	float: left;
 }
 
-.like-count {
-	color: var(--primary-color);
+.comment-like-count {
+	color: var(--text-light);
 	margin-left: 2.5px;
 	cursor: default;
 }
@@ -738,18 +911,12 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	font-size: 15px;
 	font-weight: 700;
 	margin: 0 10px;
-	color: var(--primary-color);
-}
-
-.newcomment-view {
-	border-radius: 15px;
-	margin: 30px;
-	height: 80px;
+	color: var(--text-light);
 }
 
 .newcomment-button {
-	background-color: var(--secondary-color);
-	color: var(--text-color);
+	background-color: var(--primary-color);
+	color: var(--text-light);
 	transition: 0.3s;
 	font-size: 18px;
 	float: right;
@@ -757,7 +924,7 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	width: 80px;
 	margin: 20px 30px 0 0;
 	border-radius: 15px;
-	font-weight: 800;
+	font-weight: 700;
 }
 
 .newcomment-button:hover {
@@ -769,7 +936,7 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 	margin: 20px 0 20px 30px;
 	width: calc(100% - 160px);
 	border: none;
-	background-color: var(--text-color);
+	background-color: var(--text-light);
 	font: inherit;
 	font-size: 18px;
 	color: var(--primary-color);
@@ -786,41 +953,41 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 }
 
 .profilemodal-container {
-	background: linear-gradient(var(--primary-color), var(--secondary-color));
-	background-repeat: no-repeat;
-	background-size: cover;
+	position: relative;
+	background-color: var(--background-color);
 	border-radius: 20px;
-	margin: 50px 30px;
+	margin: 20px;
 	padding: 10px;
-	height: calc(100% - 100px)
+	height: calc(100% - 60px);
 }
 
 .profilemodal-header {
-	background-color: var(--text-color);
+	background-color: var(--primary-color);
 	border-radius: 20px;
-	height: 86px;
+	height: 95px;
+	border: 2px solid var(--accent-color);
 }
 
-.profilemodal-image { 
+.profilemodal-image {
 	display: inline-block;
-	height: 60px;
-	width: 60px;
+	height: 70px;
+	width: 70px;
 	margin: 10px 0 0 10px;
-	border: 3px solid var(--primary-color);
+	border: 2px solid var(--accent-color);
 	border-radius: 25%;
 }
 
 .profilemodal-info {
 	display: inline-block;
-	height: 66px;
-	margin: 20px 0 0 5px;
+	height: 70px;
+	margin: 10px 0 0 5px;
 	vertical-align: top;
 }
 
 .profilemodal-displayname {
 	font-size: 20px;
-	font-weight: 800;
-	color: var(--primary-color);
+	font-weight: 700;
+	color: var(--text-light);
 	float: left;
 	clear: left;
 }
@@ -828,8 +995,43 @@ button, .button, .menu-item, .footer-button, .newpost-button {
 .profilemodal-username {
 	font-size: 16px;
 	font-weight: 700;
-	color: var(--primary-color);
+	color: var(--text-light);
 	float: left;
 	clear: left;
 	margin-top: -2.5px;
+}
+
+.profilemodal-more {
+	display: flex;
+	height: 20px;
+	float: left;
+	clear: left;
+	justify-content: center;
+	gap: 10px;
+	margin-top: 5px;
+}
+
+.profilemodal-following {
+	color: var(--text-light);
+	font-size: 14px;
+	line-height: 14px;
+}
+
+.profilemodal-followers {
+	color: var(--text-light);
+	font-size: 14px;
+	line-height: 14px;
+}
+
+.profilemodal-button {
+	background-color: var(--accent-color);
+	color: var(--text-light);
+	border-radius: 15px;
+	cursor: pointer;
+	font-size: 18px;
+	line-height: 18px;
+	font-weight: 700;
+	float: right;
+	padding: 10px;
+	margin: 22px 10px 0 0;
 }
