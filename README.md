@@ -8,7 +8,7 @@
 - [x] Like/Unlike Post
 - [x] Create Comment
 - [x] Delete Comment
-- [x] View Post + Comments
+- [x] View Post Modal + Comments
 - [ ] Like/Unlike Comment (Buggy - Needs Fixing)
 - [x] View Your Profile
 - [x] Edit Your Profile
@@ -19,6 +19,6 @@
 - [ ] See OtherUser's Posts on OtherUser's Profile
 - [ ] Messaging System
 - [ ] Search System
-- [ ] Show Posts by People You Follow
+- [x] Update FetchPosts to a Feed System
 
 More to come...?

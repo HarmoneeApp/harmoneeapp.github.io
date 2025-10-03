@@ -1,10 +1,3 @@
-const postsDB = firebase.database().ref("posts");
-
-var recentPosts = document.getElementById("recent-posts");
-var profilePosts = document.getElementById("profile-posts");
-var userPosts = document.getElementById("user-posts");
-var listeningFirebaseRefs = [];
-
 // New Post 
 function createNewPost(userID, postContent, postDate) {
 	// Post Entry
