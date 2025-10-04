@@ -20,7 +20,7 @@ function showTab(evt, tabName) {
 		tabContent[i].style.display = "none";
 	}
 
-	tabLinks = document.getElementsByClassName("tab-link");
+	tabLinks = document.getElementsByClassName("tab-item");
 	for (i = 0; i < tabLinks.length; i++) {
 		tabLinks[i].className = tabLinks[i].className.replace(" active", "");
 	}
@@ -39,7 +39,7 @@ function showView(viewName) {
 		tabContent[i].style.display = "none";
 	}
 
-	tabLinks = document.getElementsByClassName("tab-link");
+	tabLinks = document.getElementsByClassName("tab-item");
 	for (i = 0; i < tabLinks.length; i++) {
 		tabLinks[i].className = tabLinks[i].className.replace(" active", "");
 	}

@@ -37,14 +37,11 @@
 		</script>
 		<!-- Navigation -->
 		<div class="tab">
-			<button class="tab-link" onclick="showTab(event, 'feed')" id="default">Feed</button>
-			<button class="tab-link" onclick="showTab(event, 'search')">Search</button>
-			<button class="tab-link" onclick="showTab(event, 'messages')">Messages</button>
-			<button class="profile-button" onclick="showProfileMenu()"><img id="avatar-icon" class="avatar-icon"></button>
-		</div>
-		<div class="profile-menu" id="profileMenu">
-			<button class="menu-item" onclick="showProfile()">Profile</button>
-			<button class="menu-item" onclick="signOutUser()">Sign Out</button>
+			<button class="tab-item" onclick="showTab(event, 'feed')" id="default">Feed</button>
+			<button class="tab-item" onclick="showTab(event, 'search')">Search</button>
+			<button class="tab-item" onclick="showTab(event, 'messages')">Messages</button>
+			<button class="tab-item" onclick="signOutUser()">Sign Out</button>
+			<button class="tab-item" onclick="showTab(event, 'profile')">Profile</button>
 		</div>
 		<!-- Feed -->
 		<div id="feed" class="tab-content">
@@ -79,12 +76,20 @@
 			<div class="profile-header">
 				<img class="profile-image">
 				<div class="profile-info">
-					<br>
-					<span class="profile-name">Name</span>
-					<br>
-					<span class="profile-username">Username</span>
-					<div class="edit-button" onclick="editProfile()">Edit Profile</div>
-				</div>
+					<span class="profile-displayname"></span>
+					<span class="profile-username"></span>
+					<div class="profile-stats">
+						<div class="profile-stat">
+							<span class="profile-statlabel">Following</span>
+							<span class="profile-following"></span>
+						</div>
+						<div class="profile-stat">
+							<span class="profile-statlabel">Followers</span>
+							<span class="profile-followers"></span>
+						</div>
+					</div>
+				</div>					
+				<div class="profile-button" onclick="editProfile()">Edit Profile</div>
 			</div>
 			<div id="edit-profile" class="modal">
 				<div class="modal-content">
@@ -138,18 +143,23 @@
 		<!-- View Profile Modal -->
 		<div id="view-profile" class="global-modal">
 			<div class="profilemodal-container">
-				<div class="profilemodal-header">
-					<img class="profilemodal-image">
-					<div class="profilemodal-info">
-						<span class="profilemodal-displayname"></span>
-						<span class="profilemodal-username"></span>
-						<div class="profilemodal-more">
-							<span class="profilemodal-following">Following</span>
-							<span class="profilemodal-followers">Followers</span>
+				<div class="profile-header">
+					<img class="profile-image">
+					<div class="profile-info">
+						<span class="profile-displayname"></span>
+						<span class="profile-username"></span>
+						<div class="profile-stats">
+							<div class="profile-stat">
+								<span class="profile-statlabel">Following</span>
+								<span class="profile-following"></span>
+							</div>
+							<div class="profile-stat">
+								<span class="profile-statlabel">Followers</span>
+								<span class="profile-followers"></span>
+							</div>
 						</div>
-					</div>
-					<div class="profilemodal-button"></div>
-					
+					</div>					
+					<div class="profile-button"></div>
 				</div>
 			</div>
 		</div>
@@ -174,7 +184,6 @@
 					// User is signed in.
 					didSignIn = true;
 
-					loadProfilePicture(user.uid);
 					loadProfileInfo(user.uid);
 
 					listenForPosts();

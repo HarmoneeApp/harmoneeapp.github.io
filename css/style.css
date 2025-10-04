@@ -188,8 +188,8 @@ input[type="checkbox"] {
 }
 
 .avatar-icon {
-	height: 35px;
-	width: 35px;
+	height: 30px;
+	width: 30px;
 	border-radius: 50%;
 	border: 3px solid var(--accent-color);
 }
@@ -228,7 +228,7 @@ input[type="checkbox"] {
 	border-radius: 15px;
 	margin: 15px 10px 0 10px;
 	overflow: hidden;
-	height: 50px;
+	height: 40px;
 	border: 2px solid var(--accent-color);
 }
 
@@ -236,13 +236,13 @@ input[type="checkbox"] {
 	background-color: inherit;
 	color: var(--text-light);
 	float: left;
-	height: 50px;
+	height: 40px;
 	text-align: center;
 	margin: auto;
 	padding: 0 15px;
 	transition: 0.3s;
-	font-size: 18px;
-	line-height: 50px;
+	font-size: 16px;
+	line-height: 40px;
 	font-weight: 700;
 }
 
@@ -256,62 +256,18 @@ input[type="checkbox"] {
 	transition: 0.15s ease-in;
 }
 
-.tab button.profile-button {
+.tab button:nth-of-type(4) {
 	float: right;
-	height: 35px;
-	margin: 4.5px 15px 0 0;
-	padding: 0;
-	border-radius: 50%;
 }
 
-.profile-menu {
-	display: none;
-	width: fit-content;
-	background-color: var(--primary-color);
-	border-radius: 15px;
-	z-index: 1;
+.tab button:nth-of-type(5) {
 	float: right;
-	margin: 10px 10px 0 0;
-	border: 2px solid var(--accent-color);
-}
-
-.show {
-	display: block;
-}
-
-.menu-item {
-	display: inline-block;
-	background-color: inherit;
-	color: var(--text-light);
-	height: 50px;
-	text-align: center;
-	margin: auto;
-	padding: 0 15px 0 15px;
-	transition: 0.3s;
-	font-size: 18px;
-	line-height: 50px;
-	font-weight: 700;
-}
-
-.menu-item:hover {
-	background-color: var(--accent-color);
-}
-
-.menu-item:first-of-type {
-	border-radius: 15px 0 0 15px;
-}
-
-.menu-item:last-of-type {
-	border-radius: 0 15px 15px 0;
 }
 
 .tab-content {
 	display: none;
 	border-top: none;
-}
-
-.moved-down {
-	margin-top: 70px;
+	margin: 10px 10px;
 }
 
 .tab-title {
@@ -322,7 +278,7 @@ input[type="checkbox"] {
 .newpost-view {
 	background-color: var(--primary-color);
 	border-radius: 15px;
-	margin: 10px 10px 30px 10px;
+	margin: 10px 0 30px 0;
 	height: 100px;
 	border: 2px solid var(--accent-color);
 }
@@ -378,76 +334,100 @@ input[type="checkbox"] {
 }
 
 .profile-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 	background-color: var(--primary-color);
 	border-radius: 20px;
-	margin: 10px 10px 30px 10px;
-	height: 120px;
 	border: 2px solid var(--accent-color);
+	height: 90px;
+	padding: 0 10px;
 }
 
 .profile-image {
-	display: inline-block;
-	vertical-align: middle;
-	width: 80px;
-	height: 80px;
+	height: 70px;
+	width: 70px;
 	border: 2px solid var(--accent-color);
-	margin: 15px 0 0 15px;
-	border-radius: 20px;
+	border-radius: 25%;
+	margin-right: 10px;
 }
 
 .profile-info {
-	display: inline-block;
-	vertical-align: middle;
-	height: 80px;
-	width: calc(100% - 125px);
-	margin: 15px 0 0 5px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	height: 100%;
+	margin-right: auto;
 }
 
-.profile-name {
-	font-size: 20px;
+.profile-displayname {
+	font-size: 15px;
 	font-weight: 700;
 	color: var(--text-light);
-	line-height: 20px;
+	float: left;
+	clear: left;
+	margin-top: 3.5px;
 }
 
 .profile-username {
-	font-size: 20px;
+	font-size: 13px;
 	font-weight: 700;
 	color: var(--text-light);
-	line-height: 20px;
-	margin-top: -20px;
+	float: left;
+	clear: left;
+	margin-top: -4px;
 }
 
-.profile-info br {
-	line-height: 10px;
+.profile-stats {
+	display: flex;
+	float: left;
+	clear: left;
+	justify-content: center;
+	margin-top: 5px;
+	gap: 5px;
 }
 
-.follower-label {
+.profile-stat {
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+	background-color: var(--accent-color);
+	border-radius: 7.5px;
+	cursor: default;
+	padding: 2.5px 5px;
+}
+
+.profile-statlabel {
 	color: var(--text-light);
-	font-size: 14px;
-	line-height: 14px;
+	font-size: 12px;
+	line-height: 12px;
 }
 
-.following-label {
+.profile-following {
 	color: var(--text-light);
-	font-size: 14px;
-	line-height: 14px;
+	font-size: 12px;
+	line-height: 12px;
 }
 
-.edit-button {
-	position: static;
+.profile-followers {
+	color: var(--text-light);
+	font-size: 12px;
+	line-height: 12px;
+}
+
+.profile-button {
 	background-color: var(--accent-color);
 	color: var(--text-light);
-	padding: 0.5rem 0.75rem;
 	border-radius: 15px;
 	cursor: pointer;
-	font-size: 18px;
+	font-size: 14px;
+	line-height: 14px;
 	font-weight: 700;
-	float: right;
-	margin-top: -20px;
+	padding: 10px;
+	margin-top: -25px;
 }
 
-.edit-button:hover {
+.profile-button:hover {
 	background-color: var(--highlight-color);
 }
 
@@ -596,11 +576,10 @@ input[type="checkbox"] {
 	background-color: var(--highlight-color);
 }
 
-
 .post {
 	background-color: var(--primary-color);
 	border-radius: 20px;
-	margin: 10px 10px 0 10px;
+	margin: 10px 0 0 0;
 	height: auto;
 	border: 2px solid var(--accent-color);
 }
@@ -959,79 +938,4 @@ input[type="checkbox"] {
 	margin: 20px;
 	padding: 10px;
 	height: calc(100% - 60px);
-}
-
-.profilemodal-header {
-	background-color: var(--primary-color);
-	border-radius: 20px;
-	height: 95px;
-	border: 2px solid var(--accent-color);
-}
-
-.profilemodal-image {
-	display: inline-block;
-	height: 70px;
-	width: 70px;
-	margin: 10px 0 0 10px;
-	border: 2px solid var(--accent-color);
-	border-radius: 25%;
-}
-
-.profilemodal-info {
-	display: inline-block;
-	height: 70px;
-	margin: 10px 0 0 5px;
-	vertical-align: top;
-}
-
-.profilemodal-displayname {
-	font-size: 20px;
-	font-weight: 700;
-	color: var(--text-light);
-	float: left;
-	clear: left;
-}
-
-.profilemodal-username {
-	font-size: 16px;
-	font-weight: 700;
-	color: var(--text-light);
-	float: left;
-	clear: left;
-	margin-top: -2.5px;
-}
-
-.profilemodal-more {
-	display: flex;
-	height: 20px;
-	float: left;
-	clear: left;
-	justify-content: center;
-	gap: 10px;
-	margin-top: 5px;
-}
-
-.profilemodal-following {
-	color: var(--text-light);
-	font-size: 14px;
-	line-height: 14px;
-}
-
-.profilemodal-followers {
-	color: var(--text-light);
-	font-size: 14px;
-	line-height: 14px;
-}
-
-.profilemodal-button {
-	background-color: var(--accent-color);
-	color: var(--text-light);
-	border-radius: 15px;
-	cursor: pointer;
-	font-size: 18px;
-	line-height: 18px;
-	font-weight: 700;
-	float: right;
-	padding: 10px;
-	margin: 22px 10px 0 0;
 }

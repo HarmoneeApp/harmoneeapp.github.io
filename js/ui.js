@@ -213,7 +213,7 @@ function viewProfile(userID) {
 	var modal = document.getElementById("view-profile");
 	modal.style.display = "block";
 
-	var followButton = document.getElementsByClassName("profilemodal-button")[0];
+	var followButton = document.getElementsByClassName("profile-button")[1];
 	
 	if (!followEventAdded) {
 		followButton.addEventListener("click", () => {
@@ -236,12 +236,12 @@ function viewProfile(userID) {
 function loadProfileModal(userID) {
 	var currentUserID = firebase.auth().currentUser.uid;
 
-	var avatarView = document.getElementsByClassName("profilemodal-image")[0];
-	var profileDisplayName = document.getElementsByClassName("profilemodal-displayname")[0];
-	var profileUsername = document.getElementsByClassName("profilemodal-username")[0];
-	var followButton = document.getElementsByClassName("profilemodal-button")[0];
-	var followingLabel = document.getElementsByClassName("profilemodal-following")[0];
-	var followerLabel = document.getElementsByClassName("profilemodal-followers")[0];
+	var avatarView = document.getElementsByClassName("profile-image")[1];
+	var profileDisplayName = document.getElementsByClassName("profile-displayname")[1];
+	var profileUsername = document.getElementsByClassName("profile-username")[1];
+	var followButton = document.getElementsByClassName("profile-button")[1];
+	var followingLabel = document.getElementsByClassName("profile-following")[1];
+	var followerLabel = document.getElementsByClassName("profile-followers")[1];
 		
 	var url = getProfilePictureURL(userID);
 
@@ -256,8 +256,8 @@ function loadProfileModal(userID) {
 
 		profileDisplayName.textContent = displayName;
 		profileUsername.textContent = "@" + username;
-		followingLabel.textContent = followingCount + " Following";
-		followerLabel.textContent = followerCount + " Followers";
+		followingLabel.textContent = followingCount;
+		followerLabel.textContent = followerCount;
 
 		if (snapshot.val().followers && snapshot.val().followers[currentUserID]) {
 			followButton.innerHTML = "Unfollow";
@@ -269,33 +269,33 @@ function loadProfileModal(userID) {
 
 // Profile Stuff
 function loadProfileInfo(userID) {
-	var profileNameLabel = document.getElementsByClassName("profile-name")[0];
-	var profileUsernameLabel = document.getElementsByClassName("profile-username")[0];
-
+	var profileImage = document.getElementsByClassName("profile-image")[0];
+	var updateAvatarView = document.getElementsByClassName("update-avatar")[0];
+	var profileDisplayName = document.getElementsByClassName("profile-displayname")[0];
+	var profileUsername = document.getElementsByClassName("profile-username")[0];
+	var followingLabel = document.getElementsByClassName("profile-following")[0];
+	var followerLabel = document.getElementsByClassName("profile-followers")[0];
 	var editProfileNameLabel = document.getElementById("edit-displayname");
 	var editProfileUsernameLabel = document.getElementById("edit-username");
+		
+	var url = getProfilePictureURL(userID);
 
-	return firebase.database().ref("/users/" + userID).once("value").then((snapshot) => {
+	profileImage.setAttribute('src', url);
+	updateAvatarView.style.backgroundImage = "url(" + url + ")";
+
+	firebase.database().ref("/users/" + userID).once("value").then((snapshot) => {
 		var displayName = (snapshot.val() && snapshot.val().displayName) || "Display Name";
 		var username = (snapshot.val() && snapshot.val().username) || "Username";
 		var verified = (snapshot.val() && snapshot.val().verified) || false;
+		var followingCount = (snapshot.val() && snapshot.val().followingCount) || 0;
+		var followerCount = (snapshot.val() && snapshot.val().followerCount) || 0;
 
-		profileNameLabel.textContent = displayName;
-		profileUsernameLabel.textContent = "@" + username;
-	
+		profileDisplayName.textContent = displayName;
+		profileUsername.textContent = "@" + username;
+		followingLabel.textContent = followingCount;
+		followerLabel.textContent = followerCount;
+
 		editProfileNameLabel.value = displayName;
 		editProfileUsernameLabel.value = username;
 	});
-}
-
-function loadProfilePicture(userID) {
-	var avatarView = document.getElementById("avatar-icon");
-	var profileImage = document.getElementsByClassName("profile-image")[0];
-	var updateAvatarView = document.getElementsByClassName("update-avatar")[0];
-	
-	var url = getProfilePictureURL(userID);
-
-	avatarView.setAttribute('src', url);
-	profileImage.setAttribute('src', url);
-	updateAvatarView.style.backgroundImage = "url(" + url + ")";
 }
