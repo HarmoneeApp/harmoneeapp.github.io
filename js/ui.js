@@ -159,8 +159,14 @@ function closeModal() {
 
 // View Post Modal
 function viewPost(post) {
+	var lastPosition = window.scrollY;
+	
+	window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+
 	var modal = document.getElementById("view-post");
 	modal.style.display = "block";
+
+	document.body.classList.add("modal-open");
 
 	var commentFunction = function() {
 		return createComment(post.key);
@@ -170,7 +176,11 @@ function viewPost(post) {
 		if (e.target == this) {
 			modal.style.display = "none";
 
+			document.body.classList.remove("modal-open");
+
 			document.getElementById("createComment").removeEventListener('click', commentFunction);
+
+			window.scrollTo({ top: lastPosition, left: 0, behavior: "instant" });
 		}
 	});
 
@@ -203,15 +213,21 @@ function viewPost(post) {
 
 	document.getElementById("createComment").addEventListener('click', commentFunction);
 
-	listenForComments(post.key);
+	loadComments(post.key);
 }
 
 // View Profile Modal
 let followEventAdded = false;
 
 function viewProfile(userID) {
+	var lastPosition = window.scrollY;
+	
+	window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+
 	var modal = document.getElementById("view-profile");
 	modal.style.display = "block";
+
+	document.body.classList.add("modal-open");
 
 	var followButton = document.getElementsByClassName("profile-button")[1];
 	
@@ -227,6 +243,10 @@ function viewProfile(userID) {
 	modal.addEventListener('click', function(e) {
 		if (e.target == this) {
 			modal.style.display = "none";
+
+			document.body.classList.remove("modal-open");
+
+			window.scrollTo({ top: lastPosition, left: 0, behavior: "instant" });
 		}
 	});
 
@@ -265,6 +285,8 @@ function loadProfileModal(userID) {
 			followButton.innerHTML = "Follow";
 		}
 	});
+
+	loadUserPosts(userID);
 }
 
 // Profile Stuff

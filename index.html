@@ -61,15 +61,57 @@
 		</div>
 		<!-- Search -->
 		<div id="search" class="tab-content">
-			<center>
-				<p class="tab-title">Coming Soon</p>
-			</center>
+			<p class="tab-title">Coming Soon</p>
 		</div>
 		<!-- Messages -->
 		<div id="messages" class="tab-content">
-			<center>
-				<p class="tab-title">Coming Soon</p>
-			</center>
+			<div class="conversations-container">
+				<aside class="conversations">
+					<div class="conversations-header">
+						<div class="convos-label">Conversations</div>
+						<div class="new-conversation">+</div>
+					</div>
+					<div class="conversation-list">
+						<div class="conversation-item">
+							<img src="img/avatar.png" class="convo-avatar">
+							<div class="convo-info">
+								<div class="convo-displayname">Display Name</div>
+								<div class="convo-lastmessage">Last Message</div>
+							</div>
+						</div>
+						<div class="conversation-item">
+							<img src="img/avatar.png" class="convo-avatar">
+							<div class="convo-info">
+								<div class="convo-displayname">Display Name</div>
+								<div class="convo-lastmessage">Last Message</div>
+							</div>
+						</div>
+						<div class="conversation-item">
+							<img src="img/avatar.png" class="convo-avatar">
+							<div class="convo-info">
+								<div class="convo-displayname">Display Name</div>
+								<div class="convo-lastmessage">Last Message</div>
+							</div>
+						</div>
+					</div>
+				</aside>
+				<main class="chat-area">
+					<div class="messages">
+						<div class="message incoming">
+							<img src="img/avatar.png" class="message-avatar">
+							<div class="bubble">Incoming Message</div>
+						</div>
+						<div class="message outgoing">
+							<img src="img/avatar.png" class="message-avatar">
+							<div class="bubble">Outgoing Message</div>
+						</div>
+					</div>
+					<div class="newmessage-container">
+						<textarea id="newmessage-content" class="newmessage-textarea" spellcheck="true" maxlength="420" placeholder="Type your message..." onkeyup="autogrow(this)"></textarea>
+						<button class="newmessage-button" id="sendMessage">Send</button>
+					</div>
+				</main>
+			</div>
 		</div>
 		<!-- My Profile -->
 		<div id="profile" class="tab-content">
@@ -136,9 +178,11 @@
 					</div>
 				</div>
 				<div class="comment-container"></div>
+				<div class="newcomment-container">
+					<textarea id="newcomment-content" class="newcomment-textarea" spellcheck="false" maxlength="420" placeholder="Comment" onkeyup="autogrow(this)"></textarea>
+					<button class="newcomment-button" id="createComment">Comment</button>
+				</div>
 			</div>
-			<textarea id="newcomment-content" class="newcomment-textarea" spellcheck="false" maxlength="420" placeholder="What's happening?" onkeyup="autogrow(this)"></textarea>
-			<button class="newcomment-button" id="createComment">Post</button>
 		</div>
 		<!-- View Profile Modal -->
 		<div id="view-profile" class="global-modal">
@@ -161,6 +205,10 @@
 					</div>					
 					<div class="profile-button"></div>
 				</div>
+				<!-- Posts -->
+				<div id="user-posts">
+					<div class="posts-container"></div>
+				</div>
 			</div>
 		</div>
 		<!-- Other Scripts -->
@@ -171,6 +219,7 @@
 		<script type="module" src="js/supabase.js"></script>
 		<script src="js/auth.js"></script>
 		<script src="js/db.js"></script>
+		<script src="js/global.js"></script>
 		<script src="js/listeners.js"></script>
 		<script src="js/ui.js"></script>
 		<script src="js/users.js"></script>

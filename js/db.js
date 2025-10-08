@@ -41,7 +41,7 @@ function createNewComment(postID, userID, commentContent, commentDate) {
 	// Write comment data
 	var updates = {};
 	updates["/posts/" + postID + "/comments/" + newCommentKey] = commentData;
-
+	
 	return firebase.database().ref().update(updates);
 }
 

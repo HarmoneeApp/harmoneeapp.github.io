@@ -1,5 +1,3 @@
-const usernamesDB = firebase.database().ref("usernames");
-
 // Create User - Validate Data
 function validateData(displayName, username, email, password, confirm) {
 	const errors = [];

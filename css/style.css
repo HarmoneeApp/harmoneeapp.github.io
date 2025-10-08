@@ -266,11 +266,12 @@ input[type="checkbox"] {
 
 .tab-content {
 	display: none;
-	border-top: none;
+	flex-direction: column;
 	margin: 10px 10px;
 }
 
 .tab-title {
+	text-align: center;
 	font-size: 35px;
 	font-weight: 700;
 }
@@ -278,7 +279,7 @@ input[type="checkbox"] {
 .newpost-view {
 	background-color: var(--primary-color);
 	border-radius: 15px;
-	margin: 10px 0 30px 0;
+	margin: 10px 0 10px 0;
 	height: 100px;
 	border: 2px solid var(--accent-color);
 }
@@ -331,6 +332,187 @@ input[type="checkbox"] {
 	float: right;
 	color: var(--text-muted);
 	font-weight: 700;
+}
+
+.conversations-container {
+	display: flex;
+	width: 100%;
+	height: calc(100% - 65px);
+}
+
+.conversations {
+	display: flex;
+	flex-direction: column;
+	width: 250px;
+	background-color: var(--primary-color);
+	border-radius: 15px 0 0 15px;
+	border: 2px solid var(--accent-color);
+}
+
+.conversations-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px;
+	border-bottom: 2px solid var(--accent-color);
+}
+
+.new-conversation {
+	font-size: 20px;
+	cursor: pointer;
+	background-color: var(--accent-color);
+	height: 25px;
+	width: 25px;
+	text-align: center;
+	line-height: 25px;
+	border-radius: 5px;
+}
+
+.new-conversation:hover {
+	background-color: var(--highlight-color);
+}
+
+.conversation-list {
+	display: flex;
+	flex-direction: column;
+	margin: 10px 0;
+	overflow-y: auto;
+	flex-grow: 1;
+}
+
+.conversation-item {
+	display: flex;
+	height: 40px;
+	background-color: var(--accent-color);
+	border-radius: 10px;
+	padding: 5px;
+	cursor: pointer;
+	margin: 0 10px 10px;
+}
+
+.conversation-item:hover {
+	background-color: var(--highlight-color);
+}
+
+.convo-avatar {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	margin-right: 10px;
+}
+
+.convo-info {
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.convo-displayname {
+	font-weight: bold;
+	color: var(--text-light);
+}
+
+.convo-lastmessage {
+	font-size: 0.9rem;
+	color: var(--text-muted);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.chat-area {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	background-color: var(--primary-color);
+	border-radius: 0 15px 15px 0;
+	border: 2px solid var(--accent-color);
+}
+
+.messages {
+	padding: 1rem;
+	overflow-y: auto;
+	flex-grow: 1;
+}
+
+.message {
+	display: flex;
+	align-items: flex-end;
+	margin-bottom: 1rem;
+}
+
+.message-avatar {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	margin: 0 0.5rem;
+	border: 2px solid var(--accent-color);
+}
+
+.bubble {
+	max-width: 60%;
+	padding: 0.8rem;
+	border-radius: 1rem;
+	background-color: var(--accent-color);
+	color: var(--text-light);
+}
+
+.message.incoming {
+	flex-direction: row;
+}
+
+.message.outgoing {
+	flex-direction: row-reverse;
+}
+
+.newmessage-container {
+	display: flex;
+	padding: 10px;
+	border-top: 2px solid var(--accent-color);
+}
+
+.newmessage-textarea {
+	flex-grow: 1;
+	border-radius: 15px;
+	background-color: var(--accent-color);
+	border: 2px solid var(--highlight-color);
+	font: inherit;
+	font-size: 16px;
+	color: var(--text-light);
+	height: 40px;
+	resize: none;
+	overflow: hidden;
+	line-height: 16px;
+	font-weight: 700;
+	padding: 12px 10px;
+}
+
+.newmessage-textarea::placeholder {
+	color: var(--text-muted);
+}
+
+.newmessage-textarea:focus {
+	outline: none;
+}
+
+.newmessage-button {
+	background-color: var(--accent-color);
+	border: 2px solid var(--highlight-color);
+	color: var(--text-light);
+	transition: 0.3s;
+	font-size: 16px;
+	line-height: 40px;
+	float: right;
+	height: 40px;
+	padding: 0 15px;
+	margin: 0 0 0 10px;
+	border-radius: 15px;
+	font-weight: 700;
+}
+
+.newmessage-button:hover {
+	background-color: var(--highlight-color);
 }
 
 .profile-header {
@@ -696,9 +878,13 @@ input[type="checkbox"] {
 	display: none;
 }
 
+.modal-open {
+	overflow: hidden;
+}
+
 .global-modal {
 	position: absolute;
-	background-color: rgb(0, 0, 0, 0.3);
+	background-color: rgb(200, 200, 200, 0.3);
 	top: 0;
 	bottom: 0;
 	left: 0;
@@ -708,11 +894,13 @@ input[type="checkbox"] {
 
 .postmodal-container {
 	position: relative;
+	display: flex;
+	flex-direction: column;
 	background-color: var(--background-color);
 	border-radius: 20px;
 	margin: 20px;
 	padding: 10px;
-	height: calc(100% - 140px);
+	height: calc(100% - 60px);
 }
 
 .postmodal-post {
@@ -786,13 +974,8 @@ input[type="checkbox"] {
 }
 
 .comment-container {
-	position: absolute;
-	top: 0;
-	bottom: 10px;
-	left: 10px;
-	right: 10px;
-	border-radius: 20px;
-	overflow: auto;
+	flex: 1;
+	overflow-y: auto;
 }
 
 .comment {
@@ -893,15 +1076,43 @@ input[type="checkbox"] {
 	color: var(--text-light);
 }
 
+.newcomment-container {
+	display: flex;
+	align-items: center;
+	justify-content: stretch;
+}
+
+.newcomment-textarea {
+	flex: 1;
+	border-radius: 15px;
+	margin: 20px 0 0 0;
+	background-color: var(--primary-color);
+	border: 2px solid var(--accent-color);
+	font: inherit;
+	font-size: 16px;
+	color: var(--text-light);
+	height: 40px;
+	resize: none;
+	overflow: hidden;
+	line-height: 36px;
+	font-weight: 700;
+	padding: 2px 0 2px 10px;
+}
+
+.newcomment-textarea:focus {
+	outline: none;
+}
+
 .newcomment-button {
 	background-color: var(--primary-color);
+	border: 2px solid var(--accent-color);
 	color: var(--text-light);
 	transition: 0.3s;
-	font-size: 18px;
+	font-size: 16px;
 	float: right;
-	height: 36px;
-	width: 80px;
-	margin: 20px 30px 0 0;
+	height: 40px;
+	padding: 0 10px;
+	margin: 20px 0 0 10px;
 	border-radius: 15px;
 	font-weight: 700;
 }
@@ -910,32 +1121,18 @@ input[type="checkbox"] {
 	background-color: var(--accent-color);
 }
 
-.newcomment-textarea {
-	border-radius: 15px;
-	margin: 20px 0 20px 30px;
-	width: calc(100% - 160px);
-	border: none;
-	background-color: var(--text-light);
-	font: inherit;
-	font-size: 18px;
-	color: var(--primary-color);
-	height: 40px;
-	resize: none;
-	overflow: hidden;
-	line-height: 36px;
-	font-weight: 700;
-	padding-left: 10px;
-}
-
-.newcomment-textarea:focus {
-	outline: none;
-}
-
 .profilemodal-container {
 	position: relative;
+	display: flex;
+	flex-direction: column;
 	background-color: var(--background-color);
 	border-radius: 20px;
 	margin: 20px;
 	padding: 10px;
 	height: calc(100% - 60px);
+}
+
+#profilemodal-container.posts-container {
+	flex: 1;
+	overflow-y: auto;
 }

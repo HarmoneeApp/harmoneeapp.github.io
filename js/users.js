@@ -1,5 +1,3 @@
-const usersDB = firebase.database().ref("users");
-
 // Create User - Set Data
 function setUserData(userID, displayName, username) {
 	var userData = {
