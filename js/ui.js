@@ -113,6 +113,41 @@ function createCommentElement(commentID) {
 	return commentElement;
 }
 
+// Create Conversation
+function createConversationElement(convoID) {
+	var html =
+	'<div class="conversation-item conversation-' + convoID + '" id="conversation-' + convoID + '">' +
+		'<img class="convo-avatar">' +
+		'<div class="convo-info">' +
+			'<div class="convo-displayname"></div>' +
+			'<div class="convo-lastmessage"></div>' +
+		'</div>' +
+	'</div>';
+
+	// Create the DOM element from the HTML
+	var div = document.createElement("div");
+	div.innerHTML = html;
+	var conversationElement = div.firstChild;
+
+	return conversationElement;
+}
+
+// Create Message
+function createMessageElement(messageID, isOwnMessage) {
+	var html =
+	'<div class="message message-' + messageID + ' ' + (isOwnMessage ? 'outgoing' : 'incoming') + '" id="message-' + messageID + '">' +
+		'<img class="message-avatar">' +
+		'<div class="bubble message-text"></div>' +
+	'</div>';
+
+	// Create the DOM element from the HTML
+	var div = document.createElement("div");
+	div.innerHTML = html;
+	var messageElement = div.firstChild;
+
+	return messageElement;
+}
+
 // Profile Menu Stuff
 function showProfileMenu() {
 	var profileMenu = document.getElementById("profileMenu");
@@ -255,7 +290,7 @@ function viewProfile(userID) {
 
 function loadProfileModal(userID) {
 	var currentUserID = firebase.auth().currentUser.uid;
-
+	
 	var avatarView = document.getElementsByClassName("profile-image")[1];
 	var profileDisplayName = document.getElementsByClassName("profile-displayname")[1];
 	var profileUsername = document.getElementsByClassName("profile-username")[1];
@@ -319,5 +354,68 @@ function loadProfileInfo(userID) {
 
 		editProfileNameLabel.value = displayName;
 		editProfileUsernameLabel.value = username;
+	});
+}
+
+function listFollowedUsers() {
+	var lastPosition = window.scrollY;
+	
+	window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+
+	var modal = document.getElementById("followed-users");
+	modal.style.display = "block";
+
+	document.body.classList.add("modal-open");
+
+	modal.addEventListener('click', function(e) {
+		if (e.target == this) {
+			modal.style.display = "none";
+
+			document.body.classList.remove("modal-open");
+
+			window.scrollTo({ top: lastPosition, left: 0, behavior: "instant" });
+		}
+	});
+
+	var currentUserID = firebase.auth().currentUser.uid;
+	var followingRef = usersDB.child(currentUserID + "/following");
+	var containerElement = document.getElementsByClassName("users-container")[0];
+
+	followingRef.once("value").then(function(snapshot) {
+		var followedUsers = snapshot.val() || {};
+		var userIDs = Object.keys(followedUsers);
+
+		var promises = userIDs.map(function(userID) {
+			return usersDB.child(userID).once("value");
+		});
+
+		Promise.all(promises).then(function(results) {
+			containerElement.innerHTML = "";
+
+			results.forEach(function(snap, index) {
+				var userData = snap.val() || {};
+				var userID = userIDs[index];
+
+				var html =
+				'<div class="followed-user followed-user-' + userID + '" id="followed-user-' + userID + '">' +
+					'<img class="followed-avatar" src="' + getProfilePictureURL(userID) + '">' +
+					'<div class="followed-info">' +
+						'<span class="followed-displayname">' + (userData.displayName || "Display Name") + '</span>' +
+						'<span class="followed-username">@' + (userData.username || "Username") + '</span>' +
+					'</div>' +
+					'<button class="start-chat-button" data-userid="' + userID + '">Start Chat</button>' +
+				'</div>';
+
+				var div = document.createElement("div");
+				div.innerHTML = html;
+				var userElement = div.firstChild;
+				containerElement.appendChild(userElement);
+
+				var button = userElement.getElementsByClassName("start-chat-button")[0];
+				button.addEventListener("click", function() {
+					startConversationWith(userID);
+				});
+			});
+		});
 	});
 }

@@ -69,43 +69,12 @@
 				<aside class="conversations">
 					<div class="conversations-header">
 						<div class="convos-label">Conversations</div>
-						<div class="new-conversation">+</div>
+						<div class="new-conversation" onclick="listFollowedUsers()">+</div>
 					</div>
-					<div class="conversation-list">
-						<div class="conversation-item">
-							<img src="img/avatar.png" class="convo-avatar">
-							<div class="convo-info">
-								<div class="convo-displayname">Display Name</div>
-								<div class="convo-lastmessage">Last Message</div>
-							</div>
-						</div>
-						<div class="conversation-item">
-							<img src="img/avatar.png" class="convo-avatar">
-							<div class="convo-info">
-								<div class="convo-displayname">Display Name</div>
-								<div class="convo-lastmessage">Last Message</div>
-							</div>
-						</div>
-						<div class="conversation-item">
-							<img src="img/avatar.png" class="convo-avatar">
-							<div class="convo-info">
-								<div class="convo-displayname">Display Name</div>
-								<div class="convo-lastmessage">Last Message</div>
-							</div>
-						</div>
-					</div>
+					<div class="conversation-list"></div>
 				</aside>
 				<main class="chat-area">
-					<div class="messages">
-						<div class="message incoming">
-							<img src="img/avatar.png" class="message-avatar">
-							<div class="bubble">Incoming Message</div>
-						</div>
-						<div class="message outgoing">
-							<img src="img/avatar.png" class="message-avatar">
-							<div class="bubble">Outgoing Message</div>
-						</div>
-					</div>
+					<div class="messages"></div>
 					<div class="newmessage-container">
 						<textarea id="newmessage-content" class="newmessage-textarea" spellcheck="true" maxlength="420" placeholder="Type your message..." onkeyup="autogrow(this)"></textarea>
 						<button class="newmessage-button" id="sendMessage">Send</button>
@@ -160,6 +129,10 @@
 			<div id="profile-posts">
 				<div class="posts-container"></div>
 			</div>
+		</div>
+		<!-- Followed Users Modal -->
+		<div id="followed-users" class="global-modal">
+			<div class="users-container"></div>
 		</div>
 		<!-- View Post Modal -->
 		<div id="view-post" class="global-modal">
@@ -218,6 +191,7 @@
 		<!-- Local Scripts -->
 		<script type="module" src="js/supabase.js"></script>
 		<script src="js/auth.js"></script>
+		<script src="js/chat.js"></script>
 		<script src="js/db.js"></script>
 		<script src="js/global.js"></script>
 		<script src="js/listeners.js"></script>
@@ -237,6 +211,8 @@
 
 					listenForPosts();
 					listenForChanges();
+
+					listenForConversations();
 				} else {
 					if (didSignIn) {
 						Swal.fire({

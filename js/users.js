@@ -28,8 +28,7 @@ function updateUserData(userID, displayName, oldUsername, newUsername) {
 
 // Follow/Unfollow
 function toggleFollow(userID) {
-	const currentUserID = firebase.auth().currentUser.uid;
-
+	var currentUserID = firebase.auth().currentUser.uid;
 	usersDB.child(currentUserID).transaction((data) => {
 		if (data) {
 			if (data.following && data.following[userID]) {

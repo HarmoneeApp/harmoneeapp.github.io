@@ -1,39 +1,47 @@
-function createConversation(userIDs) {
-	// Conversation Entry
-	var convoData = {
-		participants: Object.fromEntries(userIDs.map(id => [id, true])),
-		latestMessage: initialMessage,
-		updatedAt: timestamp
-	};
+function startConversationWith(userID) {
+	var currentUserID = firebase.auth().currentUser.uid;
+	
+	var participantsHash = [currentUserID, userID].sort().join("_");
+	
+	convosDB.orderByChild("participantsHash").equalTo(participantsHash).once("value").then(function(snapshot) {
+		if (snapshot.exists()) {
+			var existingConvoKey = Object.keys(snapshot.val())[0];
+			console.log("Existing conversation:", existingConvoKey);
+			return existingConvoKey;
+		} else {
+			var convoData = {
+				participants: [currentUserID, userID],
+				participantsHash: participantsHash,
+				createdAt: Date.now()
+			};
 
-	// Create new key
-	var newConvoKey = convosDB.push().key;
+			var newConvoKey = convosDB.push().key;
 
-	// Write conversation data
-	var updates = {};
-	updates[newConvoKey] = convoData;
+			var updates = {};
+			updates[newConvoKey] = convoData;
 
-	return convosDB.update(updates);
+			return convosDB.update(updates).then(function() {
+				console.log("New conversation created:", newConvoKey);
+				return newConvoKey;
+			});
+		}
+	});
 }
 
-function sendMessage(convoID, senderID, content, timestamp) {
-	// Message Entry
+function sendMessage(convoID, senderID, messageText) {
 	var messageData = {
 		senderID: senderID,
-		content: content,
-		sentAt: timestamp
+		text: messageText,
+		timestamp: Date.now()
 	};
 
-	// Create new key
 	var newMessageKey = messagesDB.child(convoID).push().key;
 
-	// Write message data
 	var updates = {};
 	updates["/messages/" + convoID + "/" + newMessageKey] = messageData;
 
-	// Update latest message
-	updates["/conversations/" + convoID + "/latestMessage"] = content;
-	updates["/conversations/" + convoID + "/updatedAt"] = timestamp;
+	updates["/conversations/" + convoID + "/latestMessage"] = messageText;
+	updates["/conversations/" + convoID + "/updatedAt"] = Date.now();
 
 	return db.update(updates);
 }

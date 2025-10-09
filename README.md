@@ -1,10 +1,15 @@
 ## Harmone
 
-### Authentication / Users
+### Authentication
 - [x] Create Acoount
 - [x] Sign In
-- [x] Edit Your Profile
-- [x] Follow/Unfollow Other Users
+- [x] Sign Out
+
+### Users
+- [x] Edit Profile
+- [x] Follow/Unfollow Users
+- [x] List Followed Users
+- [ ] List Followers
 
 ### Posts (Backend)
 - [x] Create Post
@@ -22,7 +27,7 @@
 ### UI
 - [x] Feed
 - [ ] Search
-- [ ] Messages (WIP)
+- [X] Messages
 - [x] Profile
 
 ### UI + Backend

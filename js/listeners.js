@@ -5,9 +5,9 @@ var userPosts = document.getElementById("user-posts");
 
 // Load Timeline
 function loadTimelinePosts() {
-	const currentUserID = firebase.auth().currentUser.uid;
+	var currentUserID = firebase.auth().currentUser.uid;
 	const containerElement = timelinePosts.getElementsByClassName('posts-container')[0];
-
+	
 	usersDB.child(currentUserID).once("value").then(userSnap => {
 		const following = userSnap.val().following || {};
 
@@ -73,7 +73,7 @@ function loadTimelinePosts() {
 
 // Load Profile Posts
 function loadProfilePosts() {
-	const currentUserID = firebase.auth().currentUser.uid;
+	var currentUserID = firebase.auth().currentUser.uid;
 	const containerElement = profilePosts.getElementsByClassName('posts-container')[0];
 
 	postsDB.on("child_added", function(post) {
@@ -131,7 +131,7 @@ function loadProfilePosts() {
 
 // Load User Posts
 function loadUserPosts(userID) {
-	const currentUserID = firebase.auth().currentUser.uid;
+	var currentUserID = firebase.auth().currentUser.uid;
 	const containerElement = userPosts.getElementsByClassName('posts-container')[0];
 	containerElement.innerHTML = "";
 
@@ -197,7 +197,7 @@ function listenForPosts() {
 
 // Load Comments
 function loadComments(postID) {
-	const currentUserID = firebase.auth().currentUser.uid;
+	var currentUserID = firebase.auth().currentUser.uid;
 	const containerElement = document.getElementsByClassName('comment-container')[0];
 	containerElement.innerHTML = "";
 
@@ -259,12 +259,73 @@ function loadComments(postID) {
 
 // Listen for Changes
 function listenForChanges() {
-	const currentUserID = firebase.auth().currentUser.uid;
+	var currentUserID = firebase.auth().currentUser.uid;
 	var usersRef = firebase.database().ref("users");
 	
 	usersRef.on('child_changed', function(data) {
 		if (data.key == currentUserID) {
 			loadProfileInfo(currentUserID);
+		}
+	});
+}
+
+// Listen for Conversations
+function listenForConversations() {
+	console.log("Listening");
+
+	var currentUserID = firebase.auth().currentUser.uid;
+	const containerElement = document.querySelector(".conversation-list");
+
+	convosDB.on("child_added", function(convo) {
+		const convoData = convo.val();
+		const isParticipant = convoData.participants.includes(currentUserID);
+
+		if (isParticipant) {
+			var otherUserID = convoData.participants.find(function(uid) {
+				return uid !== currentUserID;
+			});
+
+			const convoElement = createConversationElement(convo.key);
+			containerElement.appendChild(convoElement);
+
+			const avatar = convoElement.getElementsByClassName("convo-avatar")[0];
+			avatar.setAttribute('src', getProfilePictureURL(otherUserID));
+
+			usersDB.child(otherUserID).once("value").then(function(snapshot) {
+				var userData = snapshot.val() || {};
+
+				convoElement.getElementsByClassName("convo-displayname")[0].textContent = userData.displayName;
+			});
+
+			convoElement.getElementsByClassName("convo-lastmessage")[0].textContent = convoData.latestMessage || "Nothing yet";
+		}
+	});
+}
+
+// Listen for Messages
+function listenForMessages(convoID) {
+	var currentUserID = firebase.auth().currentUser.uid;
+	const containerElement = document.querySelector(".chat-area .messages");
+	const messagesDB = messagesDB.child(convoID);
+
+	messagesDB.on("child_added", function(message) {
+		const messageData = message.val();
+		const isOwnMessage = messageData.senderID === currentUserID;
+
+		const messageElement = createMessageElement(message.key, isOwnMessage);
+		containerElement.appendChild(messageElement);
+
+		const avatar = messageElement.querySelector(".message-avatar");
+		avatar.setAttribute('src', getProfilePictureURL(messageData.senderID));
+
+		messageElement.querySelector(".bubble").innerHTML = messageData.text.replace(/(?:\r\n|\r|\n)/g, '<br>');
+		messageElement.setAttribute('data-senderid', messageData.senderID);
+	});
+
+	messagesDB.on("child_removed", function(message) {
+		const messageElement = containerElement.querySelector(".message[data-id='" + message.key + "']");
+		if (messageElement) {
+			messageElement.remove();
 		}
 	});
 }

@@ -88,6 +88,7 @@ function getProfilePosts(userID) {
 
 // Create Post
 function createPost() {
+	var currentUserID = firebase.auth().currentUser.uid;
 	var postContent = document.getElementById("newpost-content").value;
 
 	if (postContent == "" || !postContent.replace(/\s/g, '').length) {
@@ -110,14 +111,13 @@ function createPost() {
 		document.getElementById("current_count").textContent = "0";
 
 		// Create Post
-		var currentUserID = firebase.auth().currentUser.uid;
-		
 		return createNewPost(currentUserID, postContent, dateString);
 	}
 }
 
 // Create Comment
 function createComment(postID) {
+	var currentUserID = firebase.auth().currentUser.uid;
 	var commentContent = document.getElementById("newcomment-content").value;
 	
 	if (commentContent == "" || !commentContent.replace(/\s/g, '').length) {
@@ -138,9 +138,7 @@ function createComment(postID) {
 		// Clear Text Field
 		document.getElementById("newcomment-content").value = "";
 
-		// Create Comment
-		var currentUserID = firebase.auth().currentUser.uid;
-		
+		// Create Comment		
 		return createNewComment(postID, currentUserID, commentContent, dateString);
 	}
 }
