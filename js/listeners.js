@@ -298,7 +298,18 @@ function listenForConversations() {
 			});
 
 			convoElement.getElementsByClassName("convo-lastmessage")[0].textContent = convoData.latestMessage || "Nothing yet";
+
+			convoElement.addEventListener("click", function() {
+				loadConversation(convo.key, otherUserID);
+			});
 		}
+	});
+
+	convosDB.on("child_changed", function(convo) {
+		const convoData = convo.val();
+		var convoElement = containerElement.querySelector(".conversation-" + convo.key);
+
+		convoElement.getElementsByClassName("convo-lastmessage")[0].textContent = convoData.latestMessage || "Nothing yet";
 	});
 }
 
@@ -306,9 +317,11 @@ function listenForConversations() {
 function listenForMessages(convoID) {
 	var currentUserID = firebase.auth().currentUser.uid;
 	const containerElement = document.querySelector(".chat-area .messages");
-	const messagesDB = messagesDB.child(convoID);
+	const messagesRef = messagesDB.child(convoID);
 
-	messagesDB.on("child_added", function(message) {
+	containerElement.innerHTML = "";
+
+	messagesRef.on("child_added", function(message) {
 		const messageData = message.val();
 		const isOwnMessage = messageData.senderID === currentUserID;
 
@@ -322,7 +335,7 @@ function listenForMessages(convoID) {
 		messageElement.setAttribute('data-senderid', messageData.senderID);
 	});
 
-	messagesDB.on("child_removed", function(message) {
+	messagesRef.on("child_removed", function(message) {
 		const messageElement = containerElement.querySelector(".message[data-id='" + message.key + "']");
 		if (messageElement) {
 			messageElement.remove();

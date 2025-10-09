@@ -357,6 +357,7 @@ function loadProfileInfo(userID) {
 	});
 }
 
+// List Followed Users
 function listFollowedUsers() {
 	var lastPosition = window.scrollY;
 	
@@ -417,5 +418,25 @@ function listFollowedUsers() {
 				});
 			});
 		});
+	});
+}
+
+function loadConversation(convoID, otherUserID) {
+	var currentUserID = firebase.auth().currentUser.uid;
+	const chatHeader = document.querySelector(".chat-area .chat-header");
+
+	usersDB.child(otherUserID).once("value").then(function(snapshot) {
+		var userData = snapshot.val() || {};
+
+		chatHeader.textContent = userData.displayName;
+	});
+
+	listenForMessages(convoID);
+
+	const newMessageView = document.getElementsByClassName("newmessage-textarea")[0];
+	const sendButton = document.getElementsByClassName("newmessage-button")[0];
+
+	sendButton.addEventListener("click", function() {
+		sendMessage(convoID, currentUserID, newMessageView.value);
 	});
 }

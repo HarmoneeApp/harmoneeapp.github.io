@@ -430,6 +430,14 @@ input[type="checkbox"] {
 	border: 2px solid var(--accent-color);
 }
 
+.chat-header {
+	padding: 1rem;
+	font-weight: bold;
+	font-size: 1.2rem;
+	text-align: center;
+	border-bottom: 2px solid var(--accent-color);
+}  
+
 .messages {
 	padding: 1rem;
 	overflow-y: auto;

@@ -1,7 +1,7 @@
-const db = firebase.database();
+const db = firebase.database().ref();
 
-const convosDB = db.ref("conversations");
-const messagesDB = db.ref("messages");
-const postsDB = db.ref("posts");
-const usernamesDB = db.ref("usernames");
-const usersDB = db.ref("users");
+const convosDB = db.child("conversations");
+const messagesDB = db.child("messages");
+const postsDB = db.child("posts");
+const usernamesDB = db.child("usernames");
+const usersDB = db.child("users");
